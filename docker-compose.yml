@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  db:
+    image: postgres:15-alpine
+    container_name: lx-proxy-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lx_proxy
+      POSTGRES_USER: lx_proxy
+      POSTGRES_PASSWORD: lxproxy2026
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - lx-proxy-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lx_proxy -d lx_proxy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 后端服务
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: lx-proxy-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://lx_proxy:lxproxy2026@db:5432/lx_proxy
+      JWT_SECRET: ${JWT_SECRET:-change_this_secret_key_in_production}
+      RUST_LOG: info
+    volumes:
+      - ./backend/.env:/app/.env
+      - xray_config:/etc/xray
+    networks:
+      - lx-proxy-network
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/system/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: lx-proxy-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - lx-proxy-network
+
+  # Xray 核心（可选，如果需要在同一容器运行）
+  xray:
+    image: ghcr.io/xtls/xray-core:latest
+    container_name: lx-proxy-xray
+    restart: unless-stopped
+    volumes:
+      - xray_config:/etc/xray
+      - /var/log/xray:/var/log/xray
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+    profiles:
+      - xray
+
+volumes:
+  postgres_data:
+    driver: local
+  xray_config:
+    driver: local
+
+networks:
+  lx-proxy-network:
+    driver: bridge

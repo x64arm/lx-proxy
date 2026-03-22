@@ -21,14 +21,32 @@
 
 ## 快速开始
 
-### 环境要求
+### 方式一：Docker 部署（推荐）
+
+```bash
+# 克隆项目
+git clone https://github.com/x64arm/lx-proxy.git
+cd lx-proxy
+
+# 启动所有服务
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f
+
+# 访问 http://localhost
+```
+
+### 方式二：手动部署
+
+#### 环境要求
 
 - Rust 1.70+
 - PostgreSQL 14+
 - Node.js 18+
 - Xray-core
 
-### 后端启动
+#### 后端启动
 
 ```bash
 cd backend
@@ -42,7 +60,7 @@ cp .env.example .env
 cargo run
 ```
 
-### 前端启动
+#### 前端启动
 
 ```bash
 cd frontend
@@ -57,7 +75,7 @@ npm run dev
 npm run build
 ```
 
-### 数据库初始化
+#### 数据库初始化
 
 ```bash
 # 创建数据库
@@ -69,6 +87,9 @@ psql -c "ALTER USER lx_proxy WITH PASSWORD 'lxproxy2026';"
 
 # 授予权限
 psql -c "GRANT ALL PRIVILEGES ON DATABASE lx_proxy TO lx_proxy;"
+
+# 运行初始化脚本
+psql -d lx_proxy -f init.sql
 ```
 
 ## API 文档

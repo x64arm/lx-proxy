@@ -13,6 +13,8 @@ import LoginView from './views/LoginView.vue'
 import DashboardView from './views/DashboardView.vue'
 import UsersView from './views/UsersView.vue'
 import InboundsView from './views/InboundsView.vue'
+import TrafficStatsView from './views/TrafficStatsView.vue'
+import SettingsView from './views/SettingsView.vue'
 
 // API 请求拦截器
 axios.interceptors.request.use(config => {
@@ -52,6 +54,16 @@ const routes = [
     path: '/inbounds', 
     component: InboundsView, 
     meta: { title: '入站配置', requiresAuth: true } 
+  },
+  { 
+    path: '/traffic', 
+    component: TrafficStatsView, 
+    meta: { title: '流量统计', requiresAuth: true } 
+  },
+  { 
+    path: '/settings', 
+    component: SettingsView, 
+    meta: { title: '系统设置', requiresAuth: true } 
   },
   { path: '/', redirect: '/dashboard' }
 ]
