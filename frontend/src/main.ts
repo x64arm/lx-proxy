@@ -15,6 +15,10 @@ import UsersView from './views/UsersView.vue'
 import InboundsView from './views/InboundsView.vue'
 import TrafficStatsView from './views/TrafficStatsView.vue'
 import SettingsView from './views/SettingsView.vue'
+import SubscriptionView from './views/SubscriptionView.vue'
+
+// 布局组件
+import MainLayout from './components/MainLayout.vue'
 
 // API 请求拦截器
 axios.interceptors.request.use(config => {
@@ -40,30 +44,42 @@ axios.interceptors.response.use(
 // 路由配置
 const routes = [
   { path: '/login', component: LoginView, meta: { title: '登录' } },
-  { 
-    path: '/dashboard', 
-    component: DashboardView, 
-    meta: { title: '仪表盘', requiresAuth: true } 
-  },
-  { 
-    path: '/users', 
-    component: UsersView, 
-    meta: { title: '用户管理', requiresAuth: true } 
-  },
-  { 
-    path: '/inbounds', 
-    component: InboundsView, 
-    meta: { title: '入站配置', requiresAuth: true } 
-  },
-  { 
-    path: '/traffic', 
-    component: TrafficStatsView, 
-    meta: { title: '流量统计', requiresAuth: true } 
-  },
-  { 
-    path: '/settings', 
-    component: SettingsView, 
-    meta: { title: '系统设置', requiresAuth: true } 
+  {
+    path: '/',
+    component: MainLayout,
+    redirect: '/dashboard',
+    children: [
+      { 
+        path: 'dashboard', 
+        component: DashboardView, 
+        meta: { title: '仪表盘', requiresAuth: true } 
+      },
+      { 
+        path: 'users', 
+        component: UsersView, 
+        meta: { title: '用户管理', requiresAuth: true } 
+      },
+      { 
+        path: 'inbounds', 
+        component: InboundsView, 
+        meta: { title: '入站配置', requiresAuth: true } 
+      },
+      { 
+        path: 'traffic', 
+        component: TrafficStatsView, 
+        meta: { title: '流量统计', requiresAuth: true } 
+      },
+      { 
+        path: 'subscription', 
+        component: SubscriptionView, 
+        meta: { title: '订阅链接', requiresAuth: true } 
+      },
+      { 
+        path: 'settings', 
+        component: SettingsView, 
+        meta: { title: '系统设置', requiresAuth: true } 
+      }
+    ]
   },
   { path: '/', redirect: '/dashboard' }
 ]

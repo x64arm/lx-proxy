@@ -1,9 +1,10 @@
-<script setup lang="ts">
-</script>
-
 <template>
   <router-view />
 </template>
+
+<script setup lang="ts">
+// App 根组件，直接渲染路由视图
+</script>
 
 <style>
 * {
@@ -19,6 +20,7 @@ body {
 }
 
 #app {
-  min-height: 100vh;
+  width: 100%;
+  height: 100vh;
 }
 </style>
