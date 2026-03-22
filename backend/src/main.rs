@@ -71,8 +71,10 @@ async fn main() {
         .route("/api/inbounds/{id}/links", get(handlers::get_subscription_links))
         
         // 流量统计
-        .route("/api/traffic", get(handlers::get_traffic_stats))
-        .route("/api/traffic/{inbound_id}", get(handlers::get_inbound_traffic))
+        .route("/api/traffic", get(handlers::traffic::get_all_traffic))
+        .route("/api/traffic/{inbound_id}", get(handlers::traffic::get_inbound_traffic_stats))
+        .route("/api/traffic/summary", get(handlers::traffic::get_traffic_summary))
+        .route("/api/traffic/log", post(handlers::traffic::record_traffic_log))
         
         // 系统配置
         .route("/api/config", get(handlers::get_config).put(handlers::update_config))

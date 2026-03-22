@@ -11,6 +11,8 @@ use crate::models::*;
 use crate::auth::{generate_token, verify_token};
 use crate::xray;
 
+pub mod traffic;
+
 /// 健康检查
 pub async fn health() -> &'static str {
     "OK"
