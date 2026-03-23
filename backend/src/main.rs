@@ -14,6 +14,10 @@ mod models;
 mod db;
 mod auth;
 mod xray;
+mod tasks;
+mod xray_api;
+mod email;
+mod totp;
 
 #[tokio::main]
 async fn main() {
@@ -42,6 +46,9 @@ async fn main() {
 
     // 初始化 Xray 配置
     xray::init_xray_config().expect("Failed to initialize Xray config");
+
+    // 启动定时任务
+    tasks::spawn_all_tasks(pool.clone()).await;
 
     // 配置 CORS
     let cors = CorsLayer::new()
@@ -82,7 +89,34 @@ async fn main() {
         
         // 系统监控
         .route("/api/system/status", get(handlers::get_system_status))
-        .route("/api/system/logs", get(handlers::get_system_logs));
+        .route("/api/system/logs", get(handlers::get_system_logs))
+        
+        // 邮件通知
+        .route("/api/email/test", post(handlers::email::send_test_email))
+        .route("/api/email/status", get(handlers::email::get_email_config_status))
+        
+        // TOTP 双因素认证
+        .route("/api/totp/setup", post(handlers::totp::init_totp_setup))
+        .route("/api/totp/{user_id}/verify", post(handlers::totp::verify_and_enable_totp))
+        .route("/api/totp/{user_id}/disable", post(handlers::totp::disable_totp))
+        .route("/api/totp/{user_id}/status", get(handlers::totp::get_totp_status))
+        .route("/api/totp/backup-login", post(handlers::totp::login_with_backup_code))
+        
+        // 批量操作
+        .route("/api/batch/inbounds/enable", post(handlers::batch::batch_enable_inbounds))
+        .route("/api/batch/inbounds/disable", post(handlers::batch::batch_disable_inbounds))
+        .route("/api/batch/inbounds/delete", post(handlers::batch::batch_delete_inbounds))
+        .route("/api/batch/inbounds/reset-traffic", post(handlers::batch::batch_reset_traffic))
+        .route("/api/batch/inbounds/export", post(handlers::batch::batch_export_configs))
+        .route("/api/batch/inbounds/import", post(handlers::batch::batch_import_configs))
+        .route("/api/batch/users/delete", post(handlers::batch::batch_delete_users))
+        
+        // 高级统计
+        .route("/api/stats/advanced", get(handlers::stats::get_advanced_stats))
+        .route("/api/stats/top-users", get(handlers::stats::get_top_users))
+        .route("/api/stats/protocol-distribution", get(handlers::stats::get_protocol_distribution))
+        .route("/api/stats/hourly-activity", get(handlers::stats::get_hourly_activity))
+        .route("/api/stats/traffic-forecast", get(handlers::stats::get_traffic_forecast));
 
     // 合并路由并添加中间件
     let app = public_routes

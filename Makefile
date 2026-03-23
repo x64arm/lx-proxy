@@ -1,73 +1,91 @@
-# LX-Proxy Docker Makefile
-# 简化 Docker 部署和管理操作
+# LX-Proxy Makefile
+# 简化管理命令
 
-.PHONY: help build up down restart logs clean backup restore
+.PHONY: help setup up down logs backup update clean test build
 
 # 默认目标
 help:
-	@echo "LX-Proxy Docker 管理命令"
+	@echo "LX-Proxy 管理命令"
 	@echo ""
-	@echo "用法：make [命令]"
+	@echo "使用方式：make [command]"
 	@echo ""
-	@echo "命令:"
-	@echo "  build       构建所有 Docker 镜像"
-	@echo "  up          启动所有服务"
-	@echo "  down        停止所有服务"
-	@echo "  restart     重启所有服务"
-	@echo "  logs        查看日志"
+	@echo "命令列表:"
+	@echo "  help       显示帮助信息"
+	@echo "  setup      初始化环境（首次运行）"
+	@echo "  up         启动所有服务"
+	@echo "  down       停止所有服务"
+	@echo "  restart    重启所有服务"
+	@echo "  logs       查看所有日志"
 	@echo "  logs-backend  查看后端日志"
 	@echo "  logs-frontend 查看前端日志"
-	@echo "  logs-db     查看数据库日志"
-	@echo "  ps          查看服务状态"
-	@echo "  clean       清理所有容器和数据卷（危险！）"
-	@echo "  backup      备份数据库"
-	@echo "  restore     恢复数据库"
-	@echo "  shell-backend 进入后端容器"
-	@echo "  shell-db    进入数据库容器"
-	@echo "  status      查看系统状态"
-	@echo "  setup       初始化部署环境"
+	@echo "  logs-db    查看数据库日志"
+	@echo "  ps         查看服务状态"
+	@echo "  backup     备份数据库"
+	@echo "  restore    恢复数据库"
+	@echo "  update     更新到最新版本"
+	@echo "  clean      清理临时文件"
+	@echo "  test       运行测试"
+	@echo "  build      构建 Docker 镜像"
+	@echo "  deploy     生产环境部署"
+	@echo "  reset-admin 重置管理员密码"
 
-# 构建镜像
-build:
-	docker-compose build --no-cache
-
-build-quick:
-	docker-compose build
+# 初始化环境
+setup:
+	@echo "初始化环境..."
+	@if [ ! -f .env ]; then \
+		cp .env.example .env; \
+		echo "✅ .env 已创建，请编辑配置"; \
+	else \
+		echo "⚠️  .env 已存在"; \
+	fi
+	@if [ ! -f backend/.env ]; then \
+		cp backend/.env.example backend/.env; \
+		echo "✅ backend/.env 已创建"; \
+	else \
+		echo "⚠️  backend/.env 已存在"; \
+	fi
+	@echo "✅ 环境初始化完成"
 
 # 启动服务
 up:
+	@echo "启动服务..."
 	docker-compose up -d
+	@echo "✅ 服务已启动"
+	@echo "📌 访问：http://localhost:8080"
 
 # 启动服务（带 Xray）
 up-xray:
 	docker-compose --profile xray up -d
+	@echo "✅ 服务已启动（包含 Xray）"
 
-# 启动服务（带备份）
+# 启动服务（带自动备份）
 up-backup:
 	docker-compose --profile backup up -d
-
-# 启动所有服务
-up-all:
-	docker-compose --profile xray --profile backup up -d
+	@echo "✅ 服务已启动（包含自动备份）"
 
 # 停止服务
 down:
+	@echo "停止服务..."
 	docker-compose down
+	@echo "✅ 服务已停止"
 
 # 重启服务
 restart:
 	docker-compose restart
 
-# 查看日志
+# 查看所有日志
 logs:
 	docker-compose logs -f
 
+# 查看后端日志
 logs-backend:
 	docker-compose logs -f backend
 
+# 查看前端日志
 logs-frontend:
 	docker-compose logs -f frontend
 
+# 查看数据库日志
 logs-db:
 	docker-compose logs -f db
 
@@ -75,95 +93,93 @@ logs-db:
 ps:
 	docker-compose ps
 
-# 清理（删除容器和数据卷）
-clean:
-	@echo "警告：此操作将删除所有容器和数据卷！"
-	@echo "按 Ctrl+C 取消，或等待 5 秒后继续..."
-	@sleep 5
-	docker-compose down -v
-	docker system prune -f
-
-# 只清理容器，保留数据卷
-clean-containers:
-	docker-compose down
-
 # 备份数据库
 backup:
-	@echo "正在备份数据库..."
+	@echo "备份数据库..."
 	@mkdir -p ./data/backups
-	docker-compose exec -T db pg_dump -U lx_proxy lx_proxy | gzip > ./data/backups/lx_proxy_$$(date +%Y%m%d_%H%M%S).sql.gz
-	@echo "备份完成！"
-	@ls -lh ./data/backups/
+	@docker-compose exec -T db pg_dump -U postgres lx_proxy | gzip > ./data/backups/lx_proxy_$$(date +%Y%m%d_%H%M%S).sql.gz
+	@echo "✅ 备份完成：./data/backups/lx_proxy_$$(date +%Y%m%d_%H%M%S).sql.gz"
 
-# 恢复数据库（需要指定备份文件）
+# 恢复数据库
 restore:
-	@if [ -z "$(FILE)" ]; then \
-		echo "错误：请指定备份文件，例如：make restore FILE=./data/backups/lx_proxy_20260322_120000.sql.gz"; \
-		exit 1; \
+	@echo "选择最近的备份文件："
+	@ls -lt ./data/backups/*.sql.gz | head -10
+	@read -p "输入备份文件名：" file; \
+	if [ -f "./data/backups/$$file" ]; then \
+		echo "恢复数据库..."; \
+		gunzip -c "./data/backups/$$file" | docker-compose exec -T db psql -U postgres lx_proxy; \
+		echo "✅ 恢复完成"; \
+	else \
+		echo "❌ 文件不存在"; \
 	fi
-	@echo "正在恢复数据库：$(FILE)"
-	gunzip -c $(FILE) | docker-compose exec -T db psql -U lx_proxy -d lx_proxy
-	@echo "恢复完成！"
 
-# 进入后端容器
-shell-backend:
-	docker-compose exec backend sh
-
-# 进入前端容器
-shell-frontend:
-	docker-compose exec frontend sh
-
-# 进入数据库容器
-shell-db:
-	docker-compose exec db sh
-
-# 进入数据库 psql
-psql:
-	docker-compose exec db psql -U lx_proxy -d lx_proxy
-
-# 查看系统状态
-status:
-	@echo "=== Docker 容器状态 ==="
-	docker-compose ps
-	@echo ""
-	@echo "=== 磁盘使用情况 ==="
-	du -sh ./data/* 2>/dev/null || echo "无数据目录"
-	@echo ""
-	@echo "=== 最近日志 ==="
-	docker-compose logs --tail=20 backend
-
-# 初始化部署环境
-setup:
-	@echo "初始化 LX-Proxy 部署环境..."
-	@cp -n .env.example .env || true
-	@cp -n backend/.env.example backend/.env || true
-	@mkdir -p ./data/backups
-	@mkdir -p ./data/postgres
-	@mkdir -p ./data/nginx-proxy
-	@mkdir -p ./data/letsencrypt
-	@mkdir -p ./logs/backend
-	@mkdir -p ./logs/frontend
-	@mkdir -p ./logs/nginx
-	@mkdir -p ./logs/xray
-	@echo "环境初始化完成！"
-	@echo ""
-	@echo "下一步："
-	@echo "1. 编辑 .env 文件，修改 JWT_SECRET 等配置"
-	@echo "2. 运行 'make up' 启动服务"
-	@echo "3. 访问 http://localhost"
-
-# 更新服务
+# 更新到最新版本
 update:
-	@echo "正在更新 LX-Proxy..."
+	@echo "更新 LX-Proxy..."
 	git pull
-	docker-compose build --no-cache
 	docker-compose down
+	docker-compose build --no-cache
 	docker-compose up -d
-	@echo "更新完成！"
+	@echo "✅ 更新完成"
+
+# 清理临时文件
+clean:
+	@echo "清理临时文件..."
+	docker-compose down -v
+	docker system prune -f
+	@echo "✅ 清理完成"
+
+# 运行测试
+test:
+	@echo "运行后端测试..."
+	cd backend && cargo test
+	@echo "✅ 测试完成"
+
+# 构建 Docker 镜像
+build:
+	@echo "构建 Docker 镜像..."
+	docker-compose build
+	@echo "✅ 构建完成"
+
+# 生产环境部署
+deploy:
+	@echo "生产环境部署..."
+	@chmod +x ./scripts/deploy.sh
+	./scripts/deploy.sh
 
 # 重置管理员密码
 reset-admin:
 	@echo "重置管理员密码..."
-	@docker-compose exec db psql -U lx_proxy -d lx_proxy -c \
-		"UPDATE users SET password_hash = '\$$argon2id\$$v=19\$$m=19456,t=2,p=1\$$YWJjZGVmZ2hpams\$$abcdefghijklmnopqrstuvwxyz1234567890' WHERE username = 'admin';"
-	@echo "密码已重置为：admin123"
+	@read -p "输入新密码：" password; \
+	docker-compose exec backend \
+		psql -U postgres -d lx_proxy -c \
+		"UPDATE users SET password_hash = '$$(echo -n $$password | sha256sum | cut -d' ' -f1)', updated_at = NOW() WHERE username = 'admin';"
+	@echo "✅ 密码已重置"
+
+# 运行数据库迁移
+migrate:
+	@echo "运行数据库迁移..."
+	docker-compose exec backend sqlx migrate run
+	@echo "✅ 迁移完成"
+
+# 检查服务健康状态
+health:
+	@echo "检查服务健康状态..."
+	@curl -f http://localhost:8080/health || echo "❌ 后端服务异常"
+	@echo "✅ 健康检查完成"
+
+# 查看资源使用
+stats:
+	docker stats --no-stream
+
+# 进入后端容器
+shell-backend:
+	docker-compose exec backend bash
+
+# 进入数据库容器
+shell-db:
+	docker-compose exec db bash
+
+# 查看数据库连接
+db-connect:
+	docker-compose exec db psql -U postgres lx_proxy

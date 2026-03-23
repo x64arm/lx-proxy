@@ -41,6 +41,28 @@
           <template #title>订阅链接</template>
         </el-menu-item>
         
+        <el-sub-menu index="security">
+          <template #title>
+            <el-icon><Lock /></el-icon>
+            <span>安全中心</span>
+          </template>
+          <el-menu-item index="/totp">
+            <el-icon><Key /></el-icon>
+            <template #title>双因素认证</template>
+          </el-menu-item>
+        </el-sub-menu>
+        
+        <el-sub-menu index="notifications">
+          <template #title>
+            <el-icon><Bell /></el-icon>
+            <span>通知设置</span>
+          </template>
+          <el-menu-item index="/email-settings">
+            <el-icon><Message /></el-icon>
+            <template #title>邮件通知</template>
+          </el-menu-item>
+        </el-sub-menu>
+        
         <el-menu-item index="/settings">
           <el-icon><Setting /></el-icon>
           <template #title>系统设置</template>
@@ -63,6 +85,9 @@
         </div>
         
         <div class="header-right">
+          <!-- 主题切换 -->
+          <ThemeToggle class="theme-toggle" />
+          
           <el-dropdown @command="handleCommand">
             <span class="user-info">
               <el-avatar :size="32" :icon="UserFilled" />
@@ -99,8 +124,13 @@ import {
   Link,
   Setting,
   Fold,
-  Expand
+  Expand,
+  Lock,
+  Key,
+  Bell,
+  Message
 } from '@element-plus/icons-vue'
+import ThemeToggle from './ThemeToggle.vue'
 
 const router = useRouter()
 const route = useRoute()

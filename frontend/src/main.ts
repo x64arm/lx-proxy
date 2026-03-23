@@ -6,6 +6,7 @@ import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import axios from 'axios'
 import './style.css'
+import './styles/dark-mode.css'
 import App from './App.vue'
 
 // 视图组件
@@ -16,6 +17,8 @@ import InboundsView from './views/InboundsView.vue'
 import TrafficStatsView from './views/TrafficStatsView.vue'
 import SettingsView from './views/SettingsView.vue'
 import SubscriptionView from './views/SubscriptionView.vue'
+import TotpSettingsView from './views/TotpSettingsView.vue'
+import EmailSettingsView from './views/EmailSettingsView.vue'
 
 // 布局组件
 import MainLayout from './components/MainLayout.vue'
@@ -78,6 +81,16 @@ const routes = [
         path: 'settings', 
         component: SettingsView, 
         meta: { title: '系统设置', requiresAuth: true } 
+      },
+      { 
+        path: 'totp', 
+        component: TotpSettingsView, 
+        meta: { title: '双因素认证', requiresAuth: true } 
+      },
+      { 
+        path: 'email-settings', 
+        component: EmailSettingsView, 
+        meta: { title: '邮件通知', requiresAuth: true } 
       }
     ]
   },

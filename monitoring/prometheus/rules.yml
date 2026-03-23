@@ -1,0 +1,139 @@
+groups:
+  - name: lx_proxy_system
+    interval: 30s
+    rules:
+      # 服务宕机告警
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "服务 {{ $labels.job }} 宕机"
+          description: "{{ $labels.instance }} 的 {{ $labels.job }} 服务已宕机超过 1 分钟"
+
+      # CPU 使用率过高
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU 使用率过高"
+          description: "{{ $labels.instance }} 的 CPU 使用率超过 80% (当前值：{{ $value | humanize }}%)"
+
+      # CPU 使用率严重过高
+      - alert: CriticalCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CPU 使用率严重过高"
+          description: "{{ $labels.instance }} 的 CPU 使用率超过 95% (当前值：{{ $value | humanize }}%)"
+
+      # 内存使用率过高
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "内存使用率过高"
+          description: "{{ $labels.instance }} 的内存使用率超过 85% (当前值：{{ $value | humanize }}%)"
+
+      # 内存使用率严重过高
+      - alert: CriticalMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 95
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "内存使用率严重过高"
+          description: "{{ $labels.instance }} 的内存使用率超过 95% (当前值：{{ $value | humanize }}%)"
+
+      # 磁盘空间不足
+      - alert: LowDiskSpace
+        expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "磁盘空间不足"
+          description: "{{ $labels.instance }} 的根磁盘使用率超过 85% (当前值：{{ $value | humanize }}%)"
+
+      # 磁盘空间严重不足
+      - alert: CriticalDiskSpace
+        expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "磁盘空间严重不足"
+          description: "{{ $labels.instance }} 的根磁盘使用率超过 95% (当前值：{{ $value | humanize }}%)"
+
+  - name: lx_proxy_database
+    interval: 30s
+    rules:
+      # 数据库连接数过多
+      - alert: HighDatabaseConnections
+        expr: pg_stat_activity_count > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "数据库连接数过多"
+          description: "PostgreSQL 连接数超过 50 (当前值：{{ $value }})"
+
+      # 数据库连接数严重过多
+      - alert: CriticalDatabaseConnections
+        expr: pg_stat_activity_count > 80
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "数据库连接数严重过多"
+          description: "PostgreSQL 连接数超过 80 (当前值：{{ $value }})"
+
+      # 数据库缓存命中率低
+      - alert: LowDatabaseCacheHitRatio
+        expr: (pg_stat_database_blks_hit / (pg_stat_database_blks_hit + pg_stat_database_blks_read)) * 100 < 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "数据库缓存命中率低"
+          description: "PostgreSQL 缓存命中率低于 90% (当前值：{{ $value | humanize }}%)"
+
+  - name: lx_proxy_application
+    interval: 10s
+    rules:
+      # API 错误率高
+      - alert: HighAPIErrorRate
+        expr: sum(rate(lx_proxy_api_requests_total{status=~"5.."}[5m])) / sum(rate(lx_proxy_api_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API 错误率过高"
+          description: "API 5xx 错误率超过 5% (当前值：{{ $value | humanizePercentage }})"
+
+      # API 响应时间慢
+      - alert: SlowAPIResponse
+        expr: histogram_quantile(0.95, rate(lx_proxy_api_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API 响应时间过慢"
+          description: "API P95 响应时间超过 1 秒 (当前值：{{ $value | humanizeDuration }})"
+
+      # API 响应时间严重慢
+      - alert: CriticalSlowAPIResponse
+        expr: histogram_quantile(0.95, rate(lx_proxy_api_request_duration_seconds_bucket[5m])) > 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API 响应时间严重过慢"
+          description: "API P95 响应时间超过 5 秒 (当前值：{{ $value | humanizeDuration }})"

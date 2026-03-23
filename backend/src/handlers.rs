@@ -12,6 +12,10 @@ use crate::auth::{generate_token, verify_token};
 use crate::xray;
 
 pub mod traffic;
+pub mod email;
+pub mod totp;
+pub mod batch;
+pub mod stats;
 
 /// 健康检查
 pub async fn health() -> &'static str {
