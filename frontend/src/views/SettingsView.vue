@@ -1,19 +1,24 @@
 <template>
-  <div class="settings-view">
-    <el-tabs v-model="activeTab" type="border-card">
+  <div class="settings-view" :class="{ 'mobile-view': isMobile }">
+    <el-tabs 
+      v-model="activeTab" 
+      :type="isMobile ? '' : 'border-card'"
+      class="settings-tabs"
+      :class="{ 'mobile-tabs': isMobile }"
+    >
       <!-- 基本设置 -->
-      <el-tab-pane label="📌 基本设置" name="basic">
-        <el-form :model="settings" label-width="140px" size="large">
-          <el-form-item label="网站标题">
-            <el-input v-model="settings.web_title" placeholder="LX-Proxy" />
+      <el-tab-pane :label="`📌 ${t('settings.basic')}`" name="basic">
+        <el-form :model="settings" label-width="auto" :class="{ 'mobile-form': isMobile }">
+          <el-form-item :label="t('settings.webTitle')">
+            <el-input v-model="settings.web_title" :placeholder="t('settings.webTitle')" />
           </el-form-item>
 
-          <el-form-item label="网站副标题">
-            <el-input v-model="settings.web_subtitle" placeholder="Xray 代理管理面板" />
+          <el-form-item :label="t('settings.webSubtitle')">
+            <el-input v-model="settings.web_subtitle" :placeholder="t('settings.webSubtitle')" />
           </el-form-item>
 
-          <el-form-item label="时区">
-            <el-select v-model="settings.timezone" placeholder="选择时区" style="width: 100%">
+          <el-form-item :label="t('settings.timezone')">
+            <el-select v-model="settings.timezone" :placeholder="t('settings.timezone')" style="width: 100%">
               <el-option label="UTC" value="UTC" />
               <el-option label="Asia/Shanghai" value="Asia/Shanghai" />
               <el-option label="America/New_York" value="America/New_York" />
@@ -22,8 +27,8 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="语言">
-            <el-select v-model="settings.language" placeholder="选择语言" style="width: 100%">
+          <el-form-item :label="t('settings.language')">
+            <el-select v-model="settings.language" :placeholder="t('settings.language')" style="width: 100%">
               <el-option label="简体中文" value="zh-CN" />
               <el-option label="English" value="en-US" />
               <el-option label="繁體中文" value="zh-TW" />
@@ -33,22 +38,22 @@
       </el-tab-pane>
 
       <!-- Xray 设置 -->
-      <el-tab-pane label="🔧 Xray 设置" name="xray">
-        <el-form :model="settings" label-width="140px" size="large">
-          <el-form-item label="Xray 路径">
-            <el-input v-model="settings.xray_path" placeholder="/usr/local/bin/xray" />
+      <el-tab-pane :label="`🔧 ${t('settings.xray')}`" name="xray">
+        <el-form :model="settings" label-width="auto" :class="{ 'mobile-form': isMobile }">
+          <el-form-item :label="t('settings.xrayPath')">
+            <el-input v-model="settings.xray_path" :placeholder="t('settings.xrayPath')" />
           </el-form-item>
 
-          <el-form-item label="配置文件路径">
-            <el-input v-model="settings.xray_config_path" placeholder="/etc/xray/config.json" />
+          <el-form-item :label="t('settings.configPath')">
+            <el-input v-model="settings.xray_config_path" :placeholder="t('settings.configPath')" />
           </el-form-item>
 
-          <el-form-item label="监听端口">
+          <el-form-item :label="t('settings.listenPort')">
             <el-input-number v-model="settings.xray_port" :min="1" :max="65535" style="width: 100%" />
           </el-form-item>
 
-          <el-form-item label="日志级别">
-            <el-select v-model="settings.xray_log_level" placeholder="选择日志级别" style="width: 100%">
+          <el-form-item :label="t('settings.logLevel')">
+            <el-select v-model="settings.xray_log_level" :placeholder="t('settings.logLevel')" style="width: 100%">
               <el-option label="Debug" value="debug" />
               <el-option label="Info" value="info" />
               <el-option label="Warning" value="warning" />
@@ -57,175 +62,202 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="success" @click="testXrayConfig" :loading="testingXray">
-              🧪 测试 Xray 配置
+            <el-button type="success" @click="testXrayConfig" :loading="testingXray" :block="isMobile">
+              🧪 {{ t('settings.testXrayConfig') }}
             </el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
 
       <!-- 流量设置 -->
-      <el-tab-pane label="📊 流量设置" name="traffic">
-        <el-form :model="settings" label-width="160px" size="large">
-          <el-form-item label="每月流量重置日">
-            <el-select v-model="settings.traffic_reset_day" placeholder="选择日期" style="width: 100%">
-              <el-option label="不自动重置" :value="0" />
-              <el-option label="每月 1 日" :value="1" />
-              <el-option label="每月 5 日" :value="5" />
-              <el-option label="每月 10 日" :value="10" />
-              <el-option label="每月 15 日" :value="15" />
-              <el-option label="每月 20 日" :value="20" />
-              <el-option label="每月 25 日" :value="25" />
-              <el-option label="每月最后一天" :value="-1" />
+      <el-tab-pane :label="`📊 ${t('settings.traffic')}`" name="traffic">
+        <el-form :model="settings" label-width="auto" :class="{ 'mobile-form': isMobile }">
+          <el-form-item :label="t('settings.monthlyResetDay')">
+            <el-select v-model="settings.traffic_reset_day" :placeholder="t('settings.monthlyResetDay')" style="width: 100%">
+              <el-option :label="t('settings.noAutoReset')" :value="0" />
+              <el-option :label="t('settings.monthlyDay', { day: 1 })" :value="1" />
+              <el-option :label="t('settings.monthlyDay', { day: 5 })" :value="5" />
+              <el-option :label="t('settings.monthlyDay', { day: 10 })" :value="10" />
+              <el-option :label="t('settings.monthlyDay', { day: 15 })" :value="15" />
+              <el-option :label="t('settings.monthlyDay', { day: 20 })" :value="20" />
+              <el-option :label="t('settings.monthlyDay', { day: 25 })" :value="25" />
+              <el-option :label="t('settings.lastDay')" :value="-1" />
             </el-select>
           </el-form-item>
 
-          <el-form-item label="流量统计保留天数">
+          <el-form-item :label="t('settings.retentionDays')">
             <el-input-number v-model="settings.traffic_retention_days" :min="7" :max="365" style="width: 100%" />
-            <div class="form-tip">超过此天数的流量记录将被自动清理</div>
+            <div class="form-tip">{{ t('settings.retentionTip') }}</div>
           </el-form-item>
 
-          <el-form-item label="流量告警阈值">
+          <el-form-item :label="t('settings.warningThreshold')">
             <el-input-number v-model="settings.traffic_warning_threshold" :min="1" :max="100" style="width: 100%" />
-            <span class="unit-suffix">%</span>
-            <div class="form-tip">当流量使用超过此百分比时发送告警</div>
+            <span class="unit-suffix">{{ t('settings.percent') }}</span>
+            <div class="form-tip">{{ t('settings.warningTip') }}</div>
           </el-form-item>
         </el-form>
       </el-tab-pane>
 
       <!-- 安全设置 -->
-      <el-tab-pane label="🔐 安全设置" name="security">
-        <el-form :model="settings" label-width="160px" size="large">
-          <el-form-item label="会话超时时间">
+      <el-tab-pane :label="`🔐 ${t('settings.security')}`" name="security">
+        <el-form :model="settings" label-width="auto" :class="{ 'mobile-form': isMobile }">
+          <el-form-item :label="t('settings.sessionTimeout')">
             <el-input-number v-model="settings.session_timeout" :min="1" :max="168" style="width: 100%" />
-            <span class="unit-suffix">小时</span>
+            <span class="unit-suffix">{{ t('settings.hours') }}</span>
           </el-form-item>
 
-          <el-form-item label="最大登录尝试">
+          <el-form-item :label="t('settings.maxLoginAttempts')">
             <el-input-number v-model="settings.max_login_attempts" :min="3" :max="10" style="width: 100%" />
-            <div class="form-tip">超过此次数后 IP 将被临时封禁</div>
+            <div class="form-tip">{{ t('settings.loginAttemptsTip') }}</div>
           </el-form-item>
 
-          <el-form-item label="IP 封禁时长">
+          <el-form-item :label="t('settings.ipBanDuration')">
             <el-input-number v-model="settings.ip_ban_duration" :min="5" :max="1440" style="width: 100%" />
-            <span class="unit-suffix">分钟</span>
+            <span class="unit-suffix">{{ t('settings.minutes') }}</span>
           </el-form-item>
 
-          <el-form-item label="启用双因素认证">
+          <el-form-item :label="t('settings.enableTotp2')">
             <el-switch v-model="settings.totp_enabled" />
-            <div class="form-tip">启用后登录需要验证码</div>
+            <div class="form-tip">{{ t('settings.totpTip') }}</div>
           </el-form-item>
 
-          <el-form-item label="启用访问日志">
+          <el-form-item :label="t('settings.enableAccessLog')">
             <el-switch v-model="settings.access_log_enabled" />
-            <div class="form-tip">记录所有 API 访问日志</div>
+            <div class="form-tip">{{ t('settings.accessLogTip') }}</div>
           </el-form-item>
         </el-form>
       </el-tab-pane>
 
       <!-- 通知设置 -->
-      <el-tab-pane label="📧 通知设置" name="notification">
-        <el-form :model="settings" label-width="140px" size="large">
-          <el-form-item label="启用邮件通知">
+      <el-tab-pane :label="`📧 ${t('settings.notification')}`" name="notification">
+        <el-form :model="settings" label-width="auto" :class="{ 'mobile-form': isMobile }">
+          <el-form-item :label="t('settings.enableEmail')">
             <el-switch v-model="settings.email_enabled" @change="toggleEmailSettings" />
           </el-form-item>
 
-          <el-form-item label="SMTP 服务器" v-if="settings.email_enabled">
-            <el-input v-model="settings.smtp_host" placeholder="smtp.example.com" />
+          <el-form-item :label="t('settings.smtpServer')" v-if="settings.email_enabled">
+            <el-input v-model="settings.smtp_host" :placeholder="t('settings.smtpServer')" />
           </el-form-item>
 
-          <el-form-item label="SMTP 端口" v-if="settings.email_enabled">
+          <el-form-item :label="t('settings.smtpPort')" v-if="settings.email_enabled">
             <el-input-number v-model="settings.smtp_port" :min="1" :max="65535" style="width: 100%" />
           </el-form-item>
 
-          <el-form-item label="发件人邮箱" v-if="settings.email_enabled">
-            <el-input v-model="settings.smtp_from" placeholder="noreply@example.com" />
+          <el-form-item :label="t('settings.fromEmail')" v-if="settings.email_enabled">
+            <el-input v-model="settings.smtp_from" :placeholder="t('settings.fromEmail')" />
           </el-form-item>
 
-          <el-form-item label="SMTP 用户名" v-if="settings.email_enabled">
-            <el-input v-model="settings.smtp_username" placeholder="username" />
+          <el-form-item :label="t('settings.smtpUsername')" v-if="settings.email_enabled">
+            <el-input v-model="settings.smtp_username" :placeholder="t('settings.smtpUsername')" />
           </el-form-item>
 
-          <el-form-item label="SMTP 密码" v-if="settings.email_enabled">
-            <el-input v-model="settings.smtp_password" type="password" placeholder="password" show-password />
+          <el-form-item :label="t('settings.smtpPassword')" v-if="settings.email_enabled">
+            <el-input v-model="settings.smtp_password" type="password" :placeholder="t('settings.smtpPassword')" show-password />
           </el-form-item>
 
-          <el-form-item label="使用 SSL" v-if="settings.email_enabled">
+          <el-form-item :label="t('settings.useSSL')" v-if="settings.email_enabled">
             <el-switch v-model="settings.smtp_ssl" />
           </el-form-item>
 
           <el-form-item v-if="settings.email_enabled">
-            <el-button type="primary" @click="testEmailConfig" :loading="testingEmail">
-              📧 发送测试邮件
+            <el-button type="primary" @click="testEmailConfig" :loading="testingEmail" :block="isMobile">
+              📧 {{ t('settings.sendTestEmail') }}
             </el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
 
       <!-- 系统信息 -->
-      <el-tab-pane label="💻 系统信息" name="system">
-        <el-descriptions :column="2" border size="large">
-          <el-descriptions-item label="系统版本">{{ systemInfo.os_version }}</el-descriptions-item>
-          <el-descriptions-item label="运行时间">{{ systemInfo.uptime }}</el-descriptions-item>
-          <el-descriptions-item label="CPU 使用率">
+      <el-tab-pane :label="`💻 ${t('settings.system')}`" name="system">
+        <el-descriptions 
+          :column="isMobile ? 1 : 2" 
+          border 
+          :size="isMobile ? 'default' : 'large'"
+          class="system-descriptions"
+        >
+          <el-descriptions-item :label="t('settings.osVersion')">{{ systemInfo.os_version }}</el-descriptions-item>
+          <el-descriptions-item :label="t('settings.uptime')">{{ systemInfo.uptime }}</el-descriptions-item>
+          <el-descriptions-item :label="t('settings.cpuUsage')">
             <el-progress :percentage="systemInfo.cpu_usage" :stroke-width="18" />
           </el-descriptions-item>
-          <el-descriptions-item label="内存使用">
+          <el-descriptions-item :label="t('settings.memoryUsage')">
             {{ formatBytes(systemInfo.memory_used) }} / {{ formatBytes(systemInfo.memory_total) }}
             <el-progress :percentage="memoryPercent" :stroke-width="18" style="margin-top: 8px" />
           </el-descriptions-item>
-          <el-descriptions-item label="磁盘使用率">
+          <el-descriptions-item :label="t('settings.diskUsage')">
             <el-progress :percentage="systemInfo.disk_usage" :stroke-width="18" />
           </el-descriptions-item>
-          <el-descriptions-item label="Xray 状态">
-            <el-tag :type="systemInfo.xray_status === 'running' ? 'success' : 'danger'" size="large">
-              {{ systemInfo.xray_status === 'running' ? '✅ 运行中' : '❌ 已停止' }}
+          <el-descriptions-item :label="t('settings.xrayStatus')">
+            <el-tag :type="systemInfo.xray_status === 'running' ? 'success' : 'danger'" :size="isMobile ? 'default' : 'large'">
+              {{ systemInfo.xray_status === 'running' ? '✅ ' + t('settings.running') : '❌ ' + t('settings.stopped') }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="数据库连接">
-            <el-tag type="info" size="large">{{ systemInfo.db_connections }} 个连接</el-tag>
+          <el-descriptions-item :label="t('settings.dbConnections')">
+            <el-tag type="info" :size="isMobile ? 'default' : 'large'">{{ systemInfo.db_connections }} {{ t('settings.connections') }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="活跃会话">
-            <el-tag type="warning" size="large">{{ systemInfo.active_sessions }} 个会话</el-tag>
+          <el-descriptions-item :label="t('settings.activeSessions')">
+            <el-tag type="warning" :size="isMobile ? 'default' : 'large'">{{ systemInfo.active_sessions }} {{ t('settings.sessions') }}</el-tag>
           </el-descriptions-item>
         </el-descriptions>
 
         <el-divider />
 
-        <div class="system-actions">
-          <el-button type="warning" @click="restartXray" :loading="restartingXray">
-            🔄 重启 Xray
+        <div class="system-actions" :class="{ 'mobile-actions': isMobile }">
+          <el-button type="warning" @click="restartXray" :loading="restartingXray" :block="isMobile">
+            🔄 {{ t('settings.restartXray') }}
           </el-button>
-          <el-button type="danger" @click="clearLogs" :loading="clearingLogs">
-            🗑️ 清理日志
+          <el-button type="danger" @click="clearLogs" :loading="clearingLogs" :block="isMobile">
+            🗑️ {{ t('settings.clearLogs') }}
           </el-button>
-          <el-button @click="loadSystemInfo">
-            🔄 刷新信息
+          <el-button @click="loadSystemInfo" :block="isMobile">
+            🔄 {{ t('settings.refreshInfo') }}
           </el-button>
         </div>
       </el-tab-pane>
     </el-tabs>
 
     <!-- 底部操作栏 -->
-    <div class="form-actions">
-      <el-button type="primary" @click="saveSettings" :loading="saving" size="large">
-        💾 保存所有设置
+    <div class="form-actions" :class="{ 'mobile-actions': isMobile }">
+      <el-button type="primary" @click="saveSettings" :loading="saving" size="large" :block="isMobile">
+        💾 {{ t('settings.saveAll') }}
       </el-button>
-      <el-button @click="loadSettings" size="large">🔄 重置</el-button>
-      <el-button type="success" @click="exportSettings" size="large">
-        📤 导出配置
+      <el-button @click="loadSettings" size="large" :block="isMobile">🔄 {{ t('settings.reset') }}</el-button>
+      <el-button type="success" @click="exportSettings" size="large" :block="isMobile">
+        📤 {{ t('settings.exportConfig') }}
       </el-button>
-      <el-button type="warning" @click="importSettings" size="large">
-        📥 导入配置
+      <el-button type="warning" @click="importSettings" size="large" :block="isMobile">
+        📥 {{ t('settings.importConfig') }}
       </el-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
+
+const { t } = useI18n()
+
+// 响应式状态
+const isMobile = ref(false)
+
+// 检测设备类型
+const checkDevice = () => {
+  const width = window.innerWidth
+  isMobile.value = width <= 768
+}
+
+// 监听窗口大小变化
+onMounted(() => {
+  checkDevice()
+  window.addEventListener('resize', checkDevice)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkDevice)
+})
 
 interface Settings {
   web_title: string
@@ -363,7 +395,7 @@ const loadSettings = async () => {
       smtp_ssl: configMap.smtp_ssl !== undefined ? configMap.smtp_ssl : settings.value.smtp_ssl
     }
   } catch (error) {
-    ElMessage.warning('加载设置失败，使用默认值')
+    ElMessage.warning(t('settings.saveFailed'))
   }
 }
 
@@ -374,7 +406,7 @@ const saveSettings = async () => {
     const configArray = Object.entries(settings.value).map(([key, value]) => ({
       key,
       value: JSON.stringify(value),
-      description: `${key} 配置`
+      description: `${key} ${t('settings.config')}`
     }))
 
     // 批量保存配置
@@ -382,9 +414,9 @@ const saveSettings = async () => {
       await axios.put('/api/config', config)
     }
     
-    ElMessage.success('设置已保存')
+    ElMessage.success(t('settings.saveSuccess'))
   } catch (error) {
-    ElMessage.error('保存设置失败')
+    ElMessage.error(t('settings.saveFailed'))
   } finally {
     saving.value = false
   }
@@ -407,12 +439,12 @@ const testXrayConfig = async () => {
   try {
     const res = await axios.get('/api/config/xray')
     if (res.data) {
-      ElMessage.success('Xray 配置测试通过')
+      ElMessage.success(t('settings.testSuccess'))
     } else {
-      ElMessage.warning('Xray 配置测试失败')
+      ElMessage.warning(t('settings.testFailed'))
     }
   } catch (error) {
-    ElMessage.error('Xray 配置测试失败')
+    ElMessage.error(t('settings.testFailed'))
   } finally {
     testingXray.value = false
   }
@@ -423,9 +455,9 @@ const testEmailConfig = async () => {
   testingEmail.value = true
   try {
     // TODO: 实现后端邮件测试 API
-    ElMessage.success('测试邮件已发送，请检查收件箱')
+    ElMessage.success(t('settings.testEmailSent'))
   } catch (error) {
-    ElMessage.error('邮件发送失败')
+    ElMessage.error(t('settings.testEmailFailed'))
   } finally {
     testingEmail.value = false
   }
@@ -434,19 +466,19 @@ const testEmailConfig = async () => {
 // 重启 Xray
 const restartXray = async () => {
   try {
-    await ElMessageBox.confirm('确定要重启 Xray 服务吗？可能导致短暂的网络中断。', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('settings.confirmRestart'), t('common.warning'), {
+      confirmButtonText: t('common.yes'),
+      cancelButtonText: t('common.no'),
       type: 'warning'
     })
     
     restartingXray.value = true
     // TODO: 实现后端 Xray 重启 API
     await new Promise(resolve => setTimeout(resolve, 2000))
-    ElMessage.success('Xray 服务已重启')
+    ElMessage.success(t('settings.restartSuccess'))
   } catch (error: any) {
     if (error !== 'cancel') {
-      ElMessage.error('重启失败')
+      ElMessage.error(t('settings.restartFailed'))
     }
   } finally {
     restartingXray.value = false
@@ -456,19 +488,19 @@ const restartXray = async () => {
 // 清理日志
 const clearLogs = async () => {
   try {
-    await ElMessageBox.confirm('确定要清理所有日志吗？此操作不可恢复。', '警告', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
+    await ElMessageBox.confirm(t('settings.confirmClearLogs'), t('common.warning'), {
+      confirmButtonText: t('common.yes'),
+      cancelButtonText: t('common.no'),
       type: 'warning'
     })
     
     clearingLogs.value = true
     // TODO: 实现后端日志清理 API
     await new Promise(resolve => setTimeout(resolve, 1000))
-    ElMessage.success('日志已清理')
+    ElMessage.success(t('settings.clearSuccess'))
   } catch (error: any) {
     if (error !== 'cancel') {
-      ElMessage.error('清理失败')
+      ElMessage.error(t('settings.clearFailed'))
     }
   } finally {
     clearingLogs.value = false
@@ -492,7 +524,7 @@ const loadSystemInfo = async () => {
       active_sessions: data.active_sessions || 0
     }
   } catch (error) {
-    ElMessage.error('加载系统信息失败')
+    ElMessage.error(t('settings.loadSystemInfoFailed'))
   }
 }
 
@@ -500,7 +532,7 @@ const formatUptime = (seconds: number): string => {
   const days = Math.floor(seconds / 86400)
   const hours = Math.floor((seconds % 86400) / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
-  return `${days}天 ${hours}小时 ${minutes}分钟`
+  return `${days}${t('time.day')} ${hours}${t('time.hour')} ${minutes}${t('time.minute')}`
 }
 
 // 导出配置
@@ -513,7 +545,7 @@ const exportSettings = () => {
   link.download = `lx-proxy-config-${new Date().toISOString().split('T')[0]}.json`
   link.click()
   URL.revokeObjectURL(url)
-  ElMessage.success('配置已导出')
+  ElMessage.success(t('settings.configExported'))
 }
 
 // 导入配置
@@ -529,9 +561,9 @@ const importSettings = () => {
       const text = await file.text()
       const imported = JSON.parse(text)
       settings.value = { ...settings.value, ...imported }
-      ElMessage.success('配置已导入')
+      ElMessage.success(t('settings.configImported'))
     } catch (error) {
-      ElMessage.error('导入失败：文件格式错误')
+      ElMessage.error(t('settings.importFailed'))
     }
   }
   input.click()
@@ -567,15 +599,154 @@ onMounted(async () => {
   padding: 20px;
   background: #f5f7fa;
   border-radius: 4px;
+  flex-wrap: wrap;
 }
 
 .system-actions {
   margin-top: 20px;
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 :deep(.el-tabs__content) {
   padding: 20px;
+}
+
+/* 移动端表单样式 */
+.mobile-form :deep(.el-form-item) {
+  margin-bottom: 20px;
+}
+
+.mobile-form :deep(.el-form-item__label) {
+  width: 100% !important;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.mobile-form :deep(.el-form-item__content) {
+  width: 100%;
+}
+
+.mobile-form :deep(.el-input),
+.mobile-form :deep(.el-select),
+.mobile-form :deep(.el-input-number) {
+  width: 100% !important;
+}
+
+/* 移动端 Tabs 优化 */
+.mobile-tabs :deep(.el-tabs__item) {
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.mobile-tabs :deep(.el-tabs__content) {
+  padding: 12px;
+}
+
+/* 移动端系统信息描述 */
+.mobile-view :deep(.el-descriptions__label) {
+  width: 100%;
+  font-size: 12px;
+}
+
+.mobile-view :deep(.el-descriptions__content) {
+  width: 100%;
+  font-size: 13px;
+}
+
+/* 移动端操作按钮 */
+.mobile-actions {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-actions .el-button {
+  width: 100%;
+  min-height: 48px;
+}
+
+/* ========== 响应式适配 ========== */
+@media (max-width: 768px) {
+  .settings-view {
+    padding: 0;
+  }
+
+  .settings-tabs {
+    margin: 0 -12px;
+    border: none;
+    border-radius: 0;
+  }
+
+  .settings-tabs :deep(.el-tabs__header) {
+    padding: 0 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .settings-tabs :deep(.el-tabs__content) {
+    padding: 12px;
+    background: #f5f7fa;
+  }
+
+  .form-actions {
+    margin: 20px -12px 0;
+    padding: 16px 12px;
+    flex-direction: column;
+    border-radius: 0;
+  }
+
+  .form-actions .el-button {
+    width: 100%;
+    min-height: 48px;
+    font-size: 15px;
+  }
+
+  .system-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .system-actions .el-button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  /* 表单字段优化 */
+  :deep(.el-form-item__label) {
+    font-size: 13px;
+  }
+
+  :deep(.el-input__inner),
+  :deep(.el-select__input) {
+    font-size: 14px;
+  }
+
+  /* 进度条优化 */
+  :deep(.el-progress__text) {
+    font-size: 12px !important;
+  }
+
+  /* 标签优化 */
+  :deep(.el-tag) {
+    font-size: 12px;
+  }
+}
+
+/* ========== 触摸友好优化 ========== */
+:deep(.el-button),
+:deep(.el-menu-item),
+:deep(.el-sub-menu__title),
+:deep(.el-form-item__label) {
+  min-height: 44px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.settings-view {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 </style>

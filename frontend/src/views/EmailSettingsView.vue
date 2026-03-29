@@ -3,16 +3,16 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>📧 邮件通知设置</span>
+          <span>📧 {{ t('email.emailSettingsTitle') }}</span>
           <el-tag :type="emailStatus.configured ? 'success' : 'info'">
-            {{ emailStatus.configured ? '已配置' : '未配置' }}
+            {{ emailStatus.configured ? t('email.configured') : t('email.notConfigured') }}
           </el-tag>
         </div>
       </template>
 
       <el-alert
-        title="邮件通知功能"
-        description="配置 SMTP 服务器后，系统会自动发送流量告警、到期提醒等通知邮件。"
+        :title="t('email.emailFunctionTitle')"
+        :description="t('email.emailFunctionDesc')"
         type="info"
         :closable="false"
         show-icon
@@ -25,69 +25,69 @@
         class="email-form"
         :disabled="!editing"
       >
-        <el-divider content-position="left">SMTP 服务器配置</el-divider>
+        <el-divider content-position="left">{{ t('email.smtpConfig') }}</el-divider>
 
-        <el-form-item label="SMTP 服务器" required>
+        <el-form-item :label="t('email.smtpServerLabel')" required>
           <el-input
             v-model="emailForm.smtp_server"
-            placeholder="例如：smtp.gmail.com"
+            :placeholder="t('email.smtpServerPlaceholder')"
           />
         </el-form-item>
 
-        <el-form-item label="SMTP 端口" required>
+        <el-form-item :label="t('email.smtpPortLabel')" required>
           <el-input-number
             v-model="emailForm.smtp_port"
             :min="1"
             :max="65535"
             style="width: 150px"
           />
-          <span class="form-tip">常用端口：587 (TLS), 465 (SSL), 25 (不加密)</span>
+          <span class="form-tip">{{ t('email.smtpPortTip') }}</span>
         </el-form-item>
 
-        <el-form-item label="用户名" required>
+        <el-form-item :label="t('email.username')" required>
           <el-input
             v-model="emailForm.smtp_username"
-            placeholder="邮箱地址"
+            :placeholder="t('email.usernamePlaceholder')"
           />
         </el-form-item>
 
-        <el-form-item label="密码" required>
+        <el-form-item :label="t('email.password')" required>
           <el-input
             v-model="emailForm.smtp_password"
             type="password"
-            placeholder="SMTP 密码或应用专用密码"
+            :placeholder="t('email.passwordPlaceholder')"
             show-password
           />
           <span class="form-tip">
-            Gmail 用户需使用
+            {{ t('email.passwordTip') }}
             <el-link type="primary" href="https://support.google.com/accounts/answer/185833" target="_blank">
-              应用专用密码
+              {{ t('email.appPassword') }}
             </el-link>
           </span>
         </el-form-item>
 
-        <el-divider content-position="left">发件人配置</el-divider>
+        <el-divider content-position="left">{{ t('email.senderConfig') }}</el-divider>
 
-        <el-form-item label="发件人邮箱">
+        <el-form-item :label="t('email.senderEmail')">
           <el-input
             v-model="emailForm.smtp_from_email"
-            placeholder="默认与用户名相同"
+            :placeholder="t('email.senderEmailPlaceholder')"
           />
         </el-form-item>
 
-        <el-form-item label="发件人名称">
+        <el-form-item :label="t('email.senderName')">
           <el-input
             v-model="emailForm.smtp_from_name"
-            placeholder="例如：LX-Proxy"
+            :placeholder="t('email.senderNamePlaceholder')"
           />
         </el-form-item>
 
-        <el-divider content-position="left">测试邮件</el-divider>
+        <el-divider content-position="left">{{ t('email.testEmailSection') }}</el-divider>
 
-        <el-form-item label="测试邮箱">
+        <el-form-item :label="t('email.testEmailAddress')">
           <el-input
             v-model="testEmail"
-            placeholder="接收测试邮件的邮箱地址"
+            :placeholder="t('email.testEmailInputPlaceholder')"
             style="width: 300px"
           />
           <el-button
@@ -96,19 +96,19 @@
             :loading="sendingTest"
             class="ml-2"
           >
-            发送测试邮件
+            {{ t('email.sendTestEmail') }}
           </el-button>
         </el-form-item>
 
         <el-form-item>
           <el-button type="primary" @click="saveSettings" :loading="saving">
-            保存配置
+            {{ t('email.saveConfig') }}
           </el-button>
           <el-button @click="cancelEdit" v-if="editing">
-            取消
+            {{ t('email.cancel') }}
           </el-button>
           <el-button @click="startEdit" v-if="!editing">
-            编辑配置
+            {{ t('email.editConfig') }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -117,30 +117,30 @@
       <el-divider />
 
       <div class="notification-types">
-        <h4>📬 自动发送的通知类型：</h4>
+        <h4>{{ t('email.autoNotifications') }}</h4>
         
         <el-row :gutter="20">
           <el-col :span="8">
             <el-card shadow="hover" class="notification-card">
               <div class="notification-icon">📊</div>
-              <h5>流量告警</h5>
-              <p>当流量使用达到 70% 或 90% 时自动发送</p>
+              <h5>{{ t('email.trafficAlertCard') }}</h5>
+              <p>{{ t('email.trafficAlertDesc') }}</p>
             </el-card>
           </el-col>
 
           <el-col :span="8">
             <el-card shadow="hover" class="notification-card">
               <div class="notification-icon">⏰</div>
-              <h5>到期提醒</h5>
-              <p>配置到期前自动发送提醒邮件</p>
+              <h5>{{ t('email.expiryReminderCard') }}</h5>
+              <p>{{ t('email.expiryReminderDesc') }}</p>
             </el-card>
           </el-col>
 
           <el-col :span="8">
             <el-card shadow="hover" class="notification-card">
               <div class="notification-icon">🚫</div>
-              <h5>禁用通知</h5>
-              <p>配置被禁用时通知用户</p>
+              <h5>{{ t('email.disableNotificationCard') }}</h5>
+              <p>{{ t('email.disableNotificationDesc') }}</p>
             </el-card>
           </el-col>
         </el-row>
@@ -153,6 +153,9 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElNotification } from 'element-plus'
 import api from '@/api'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 // 状态
 const editing = ref(false)
@@ -199,7 +202,7 @@ const fetchEmailStatus = async () => {
       // 密码不加载，保持空白
     }
   } catch (error) {
-    console.error('Failed to fetch email status:', error)
+    console.error(t('email.fetchStatusFailed'), error)
   }
 }
 
@@ -218,7 +221,7 @@ const cancelEdit = () => {
 const saveSettings = async () => {
   // 验证必填字段
   if (!emailForm.smtp_server || !emailForm.smtp_username || !emailForm.smtp_password) {
-    ElMessage.warning('请填写必填字段')
+    ElMessage.warning(t('email.pleaseFillRequiredFields'))
     return
   }
 
@@ -226,11 +229,11 @@ const saveSettings = async () => {
   try {
     // 注意：后端需要添加保存配置的 API
     // 这里暂时只是前端验证和提示
-    ElMessage.success('配置已保存（需要后端支持）')
+    ElMessage.success(t('email.configSaved'))
     editing.value = false
     fetchEmailStatus()
   } catch (error: any) {
-    ElMessage.error(error.response?.data?.message || '保存失败')
+    ElMessage.error(error.response?.data?.message || t('email.saveFailed'))
   } finally {
     saving.value = false
   }
@@ -239,14 +242,14 @@ const saveSettings = async () => {
 // 发送测试邮件
 const sendTestEmail = async () => {
   if (!testEmail.value) {
-    ElMessage.warning('请输入测试邮箱地址')
+    ElMessage.warning(t('email.pleaseEnterTestEmail'))
     return
   }
 
   // 简单的邮箱格式验证
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(testEmail.value)) {
-    ElMessage.warning('请输入有效的邮箱地址')
+    ElMessage.warning(t('email.invalidEmailFormat'))
     return
   }
 
@@ -257,13 +260,13 @@ const sendTestEmail = async () => {
     })
 
     ElNotification({
-      title: '✅ 测试邮件已发送',
-      message: `测试邮件已发送至 ${testEmail.value}，请查收`,
+      title: t('email.testEmailSent'),
+      message: t('email.testEmailSentMessage', { email: testEmail.value }),
       type: 'success',
       duration: 5000
     })
   } catch (error: any) {
-    ElMessage.error(error.response?.data?.message || '发送失败，请检查 SMTP 配置')
+    ElMessage.error(error.response?.data?.message || t('email.testEmailFailed'))
   } finally {
     sendingTest.value = false
   }
@@ -278,12 +281,15 @@ onMounted(() => {
 .email-settings {
   max-width: 800px;
   margin: 0 auto;
+  padding: 0;
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .mb-4 {
@@ -318,6 +324,11 @@ onMounted(() => {
 .notification-card {
   text-align: center;
   padding: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.notification-card:hover {
+  transform: translateY(-2px);
 }
 
 .notification-icon {
@@ -335,5 +346,112 @@ onMounted(() => {
   font-size: 13px;
   color: #909399;
   margin: 0;
+}
+
+/* ========== 响应式适配 ========== */
+@media (max-width: 768px) {
+  .email-settings {
+    padding: 0;
+  }
+
+  .box-card {
+    margin: 0 -12px;
+    border-radius: 0;
+  }
+
+  .box-card :deep(.el-card__body) {
+    padding: 12px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  /* 表单移动端优化 */
+  .email-form :deep(.el-form-item) {
+    margin-bottom: 20px;
+  }
+
+  .email-form :deep(.el-form-item__label) {
+    width: 100% !important;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .email-form :deep(.el-form-item__content) {
+    width: 100%;
+  }
+
+  .email-form :deep(.el-input),
+  .email-form :deep(.el-input-number) {
+    width: 100% !important;
+  }
+
+  .ml-2 {
+    margin-left: 0;
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  .ml-2 .el-button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  /* 通知卡片响应式 */
+  .notification-types :deep(.el-row) {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .notification-types :deep(.el-col) {
+    width: 100% !important;
+  }
+
+  .notification-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .notification-icon {
+    font-size: 40px;
+  }
+
+  .notification-card h5 {
+    font-size: 15px;
+  }
+
+  .notification-card p {
+    font-size: 12px;
+  }
+
+  /* 分隔线优化 */
+  :deep(.el-divider__text) {
+    font-size: 14px;
+  }
+
+  /* 警告框优化 */
+  :deep(.el-alert__content) {
+    font-size: 13px;
+  }
+}
+
+/* ========== 触摸友好优化 ========== */
+:deep(.el-button),
+:deep(.el-menu-item),
+:deep(.el-sub-menu__title),
+:deep(.el-form-item__label) {
+  min-height: 44px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.email-settings {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 </style>
