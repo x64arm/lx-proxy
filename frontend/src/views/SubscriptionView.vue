@@ -3,28 +3,28 @@
     <el-card class="box-card">
       <template #header>
         <div class="card-header">
-          <span>🔗 订阅链接</span>
+          <span>🔗 {{ t('subscription.title') }}</span>
           <el-button type="primary" @click="refreshLinks" :loading="loading">
-            🔄 刷新
+            🔄 {{ t('subscription.refresh') }}
           </el-button>
         </div>
       </template>
 
       <el-alert
-        title="订阅链接说明"
+        :title="t('subscription.instructionTitle')"
         type="info"
         :closable="false"
         class="mb-4"
       >
-        <p>订阅链接可用于客户端一键导入所有可用节点配置。</p>
-        <p>支持 Clash、V2RayN、Surge 等主流客户端。</p>
+        <p>{{ t('subscription.instruction1') }}</p>
+        <p>{{ t('subscription.instruction2') }}</p>
       </el-alert>
 
       <!-- 入站选择 -->
       <el-form :inline="true" class="mb-4">
-        <el-form-item label="选择入站">
-          <el-select v-model="selectedInbound" placeholder="全部入站" @change="loadLinks">
-            <el-option label="全部入站" value="all" />
+        <el-form-item :label="t('subscription.selectInbound')">
+          <el-select v-model="selectedInbound" :placeholder="t('subscription.allInbounds')" @change="loadLinks">
+            <el-option :label="t('subscription.allInbounds')" value="all" />
             <el-option
               v-for="inbound in inbounds"
               :key="inbound.id"
@@ -37,15 +37,15 @@
 
       <!-- 订阅链接列表 -->
       <el-table :data="subscriptionLinks" stripe style="width: 100%">
-        <el-table-column prop="name" label="名称" width="200" />
-        <el-table-column prop="protocol" label="协议" width="100">
+        <el-table-column prop="name" :label="t('subscription.name')" width="200" />
+        <el-table-column prop="protocol" :label="t('subscription.protocol')" width="100">
           <template #default="{ row }">
             <el-tag :type="getProtocolType(row.protocol)">
               {{ row.protocol }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="订阅链接" show-overflow-tooltip>
+        <el-table-column :label="t('subscription.subscriptionLink')" show-overflow-tooltip>
           <template #default="{ row }">
             <div class="link-container">
               <el-input
@@ -58,47 +58,47 @@
                 size="small"
                 @click="copyLink(row.subscription_url)"
               >
-                📋 复制
+                📋 {{ t('subscription.copy') }}
               </el-button>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="二维码" width="120" align="center">
+        <el-table-column :label="t('subscription.qrCode')" width="120" align="center">
           <template #default="{ row }">
             <el-button type="info" size="small" @click="showQRCode(row)">
-              📱 查看
+              📱 {{ t('subscription.view') }}
             </el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- Base64 订阅 -->
-      <el-divider content-position="left">📦 Base64 订阅</el-divider>
-      <el-form-item label="Base64 订阅链接">
+      <el-divider content-position="left">📦 {{ t('subscription.base64Subscription') }}</el-divider>
+      <el-form-item :label="t('subscription.base64SubscriptionLink')">
         <div class="link-container">
           <el-input
             :model-value="base64SubscriptionUrl"
             readonly
-            placeholder="选择入站后生成"
+            :placeholder="t('subscription.selectInboundToGenerate')"
           />
           <el-button
             type="primary"
             @click="copyLink(base64SubscriptionUrl)"
             :disabled="!base64SubscriptionUrl"
           >
-            📋 复制
+            📋 {{ t('subscription.copy') }}
           </el-button>
         </div>
       </el-form-item>
     </el-card>
 
     <!-- 二维码对话框 -->
-    <el-dialog v-model="qrDialogVisible" title="订阅二维码" width="300px">
+    <el-dialog v-model="qrDialogVisible" :title="t('subscription.qrCodeTitle')" width="300px">
       <div v-if="currentQRCode" class="qr-container">
         <img :src="currentQRCode" alt="QR Code" class="qr-image" />
       </div>
       <template #footer>
-        <el-button @click="qrDialogVisible = false">关闭</el-button>
+        <el-button @click="qrDialogVisible = false">{{ t('subscription.close') }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -108,6 +108,9 @@
 import { ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Inbound {
   id: number
@@ -145,7 +148,7 @@ const loadInbounds = async () => {
     const res = await axios.get('/api/inbounds')
     inbounds.value = res.data.data || []
   } catch (error) {
-    ElMessage.error('加载入站列表失败')
+    ElMessage.error(t('subscription.loadInboundsFailed'))
   }
 }
 
@@ -178,7 +181,7 @@ const loadLinks = async () => {
       }]
     }
   } catch (error) {
-    ElMessage.error('加载订阅链接失败')
+    ElMessage.error(t('subscription.loadLinksFailed'))
   } finally {
     loading.value = false
   }
@@ -187,19 +190,19 @@ const loadLinks = async () => {
 // 刷新链接
 const refreshLinks = () => {
   loadLinks()
-  ElMessage.success('链接已刷新')
+  ElMessage.success(t('subscription.linksRefreshed'))
 }
 
 // 复制链接
 const copyLink = (text: string) => {
   if (!text) {
-    ElMessage.warning('没有可复制的链接')
+    ElMessage.warning(t('subscription.noLinkToCopy'))
     return
   }
   navigator.clipboard.writeText(text).then(() => {
-    ElMessage.success('已复制到剪贴板')
+    ElMessage.success(t('subscription.copied'))
   }).catch(() => {
-    ElMessage.error('复制失败')
+    ElMessage.error(t('subscription.copyFailed'))
   })
 }
 
@@ -236,6 +239,8 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .mb-4 {
@@ -246,10 +251,12 @@ onMounted(async () => {
   display: flex;
   gap: 10px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .link-container .el-input {
   flex: 1;
+  min-width: 200px;
 }
 
 .qr-container {
@@ -261,5 +268,122 @@ onMounted(async () => {
 .qr-image {
   max-width: 100%;
   height: auto;
+}
+
+/* ========== 响应式适配 ========== */
+@media (max-width: 768px) {
+  .subscription-view {
+    padding: 12px;
+  }
+
+  .box-card {
+    margin: 0 -12px;
+    border-radius: 0;
+  }
+
+  .box-card :deep(.el-card__body) {
+    padding: 12px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-header .el-button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  /* 表单移动端优化 */
+  :deep(.el-form--inline) {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  :deep(.el-form-item) {
+    width: 100%;
+  }
+
+  :deep(.el-form-item__label) {
+    width: 100% !important;
+    margin-bottom: 8px;
+  }
+
+  :deep(.el-select) {
+    width: 100% !important;
+  }
+
+  /* 表格移动端优化 */
+  :deep(.el-table) {
+    font-size: 13px;
+  }
+
+  :deep(.el-table th) {
+    padding: 8px 0;
+    font-size: 12px;
+  }
+
+  :deep(.el-table td) {
+    padding: 10px 0;
+  }
+
+  /* 链接容器优化 */
+  .link-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .link-container .el-input {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .link-container .el-button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  /* QR 码对话框优化 */
+  :deep(.el-dialog) {
+    width: 90% !important;
+    max-width: 320px !important;
+  }
+
+  .qr-image {
+    max-width: 240px;
+  }
+
+  /* 分隔线优化 */
+  :deep(.el-divider__text) {
+    font-size: 14px;
+  }
+
+  /* 警告框优化 */
+  :deep(.el-alert) {
+    padding: 12px;
+  }
+
+  :deep(.el-alert__content) {
+    font-size: 13px;
+  }
+}
+
+/* ========== 触摸友好优化 ========== */
+:deep(.el-button),
+:deep(.el-menu-item),
+:deep(.el-sub-menu__title) {
+  min-height: 44px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.subscription-view {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 </style>
