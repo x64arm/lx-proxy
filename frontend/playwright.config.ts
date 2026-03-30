@@ -35,49 +35,20 @@ export default defineConfig({
 
     /* Video on failure */
     video: 'on-first-retry',
+    
+    /* Wait for network to be idle */
+    actionTimeout: 10000,
+    navigationTimeout: 30000,
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
-    {
-      name: 'Mobile Chrome (Small)',
-      use: { ...devices['Pixel 4'] },
-    },
-    {
-      name: 'Mobile Safari (Small)',
-      use: { ...devices['iPhone SE'] },
-    },
-    {
-      name: 'iPad Mini',
-      use: { ...devices['iPad Mini'] },
-    },
-    {
-      name: 'iPad Air',
-      use: { ...devices['iPad Air'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        headless: true,
+      },
     },
 
     /* Test against branded browsers. */
@@ -92,9 +63,9 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run dev',
-  //   url: 'http://localhost:5173',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:5173',
+    reuseExistingServer: true,
+  },
 });

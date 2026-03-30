@@ -208,7 +208,7 @@ onMounted(() => {
       >
         <div class="card-header">
           <div class="card-id">#{{ user.id }}</div>
-          <el-tag :type="user.role === 'admin' ? 'danger' : 'primary' size="small">
+          <el-tag :type="user.role === 'admin' ? 'danger' : 'primary'" size="small">
             {{ user.role === 'admin' ? t('users.admin') : t('users.normalUser') }}
           </el-tag>
         </div>

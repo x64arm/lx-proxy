@@ -79,3 +79,10 @@ export const statsAPI = {
   getStats: () => axios.get<Stats>(`${API_BASE}/stats`),
   getSystemStatus: () => axios.get<SystemStatus>(`${API_BASE}/system/status`)
 }
+
+// Default export for backward compatibility
+export default {
+  auth: authAPI,
+  users: usersAPI,
+  inbounds: inboundsAPI
+}
