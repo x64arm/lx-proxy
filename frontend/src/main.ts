@@ -8,6 +8,8 @@ import axios from 'axios'
 import './style.css'
 import './styles/dark-mode.css'
 import App from './App.vue'
+import i18n from './i18n'
+import { setLocale } from './i18n'
 
 // 视图组件
 import LoginView from './views/LoginView.vue'
@@ -125,6 +127,9 @@ const app = createApp(App)
 
 // 注册 Pinia
 app.use(createPinia())
+
+// 注册 i18n
+app.use(i18n)
 
 // 注册路由
 app.use(router)

@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool;
+use sqlx::{PgPool, Row};
 use uuid::Uuid;
 use tracing::info;
 
@@ -40,7 +40,7 @@ pub struct BatchError {
 
 /// 批量启用入站配置
 pub async fn batch_enable_inbounds(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<BatchOperationRequest>,
 ) -> Result<Json<BatchOperationResponse>, StatusCode> {
     let mut processed = 0;
@@ -52,7 +52,7 @@ pub async fn batch_enable_inbounds(
             "UPDATE inbound_configs SET enable = true, updated_at = NOW() WHERE id = $1"
         )
         .bind(id)
-        .execute(&pool)
+        .execute(&state.pool)
         .await
         {
             Ok(_) => {
@@ -79,7 +79,7 @@ pub async fn batch_enable_inbounds(
 
 /// 批量禁用入站配置
 pub async fn batch_disable_inbounds(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<BatchOperationRequest>,
 ) -> Result<Json<BatchOperationResponse>, StatusCode> {
     let mut processed = 0;
@@ -91,7 +91,7 @@ pub async fn batch_disable_inbounds(
             "UPDATE inbound_configs SET enable = false, updated_at = NOW() WHERE id = $1"
         )
         .bind(id)
-        .execute(&pool)
+        .execute(&state.pool)
         .await
         {
             Ok(_) => {
@@ -118,7 +118,7 @@ pub async fn batch_disable_inbounds(
 
 /// 批量删除入站配置
 pub async fn batch_delete_inbounds(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<BatchOperationRequest>,
 ) -> Result<Json<BatchOperationResponse>, StatusCode> {
     let mut processed = 0;
@@ -128,7 +128,7 @@ pub async fn batch_delete_inbounds(
     for id in req.ids {
         match sqlx::query("DELETE FROM inbound_configs WHERE id = $1")
             .bind(id)
-            .execute(&pool)
+            .execute(&state.pool)
             .await
         {
             Ok(_) => {
@@ -155,7 +155,7 @@ pub async fn batch_delete_inbounds(
 
 /// 批量重置流量
 pub async fn batch_reset_traffic(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<BatchOperationRequest>,
 ) -> Result<Json<BatchOperationResponse>, StatusCode> {
     let mut processed = 0;
@@ -167,7 +167,7 @@ pub async fn batch_reset_traffic(
             "UPDATE inbound_configs SET traffic_used = 0, total_upload = 0, total_download = 0, updated_at = NOW() WHERE id = $1"
         )
         .bind(id)
-        .execute(&pool)
+        .execute(&state.pool)
         .await
         {
             Ok(_) => {
@@ -194,7 +194,7 @@ pub async fn batch_reset_traffic(
 
 /// 批量删除用户
 pub async fn batch_delete_users(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<BatchOperationRequest>,
 ) -> Result<Json<BatchOperationResponse>, StatusCode> {
     let mut processed = 0;
@@ -204,7 +204,7 @@ pub async fn batch_delete_users(
     for id in req.ids {
         match sqlx::query("DELETE FROM users WHERE id = $1")
             .bind(id)
-            .execute(&pool)
+            .execute(&state.pool)
             .await
         {
             Ok(_) => {
@@ -231,7 +231,7 @@ pub async fn batch_delete_users(
 
 /// 批量导出配置
 pub async fn batch_export_configs(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<BatchOperationRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let placeholders = req
@@ -258,7 +258,7 @@ pub async fn batch_export_configs(
     }
 
     let configs = db_query
-        .fetch_all(&pool)
+        .fetch_all(&state.pool)
         .await
         .map_err(|e| {
             tracing::error!("批量导出失败：{}", e);
@@ -293,7 +293,7 @@ pub async fn batch_export_configs(
 
 /// 批量导入配置
 pub async fn batch_import_configs(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<BatchCreateRequest>,
 ) -> Result<Json<BatchOperationResponse>, StatusCode> {
     let mut processed = 0;
@@ -325,7 +325,7 @@ pub async fn batch_import_configs(
         .bind(stream_settings)
         .bind(traffic_limit)
         .bind(expire_at)
-        .execute(&pool)
+        .execute(&state.pool)
         .await
         {
             Ok(_) => {

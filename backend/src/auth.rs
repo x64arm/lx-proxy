@@ -5,14 +5,14 @@ use axum::{
     response::Response,
     body::Body,
 };
-use sqlx::PgPool;
 
 /// JWT 认证中间件
 pub async fn auth_middleware(
-    State(_pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     mut req: Request<Body>,
     next: Next,
 ) -> Result<Response, StatusCode> {
+    let _pool = state.pool;
     // 获取 Authorization header
     let auth_header = req
         .headers()

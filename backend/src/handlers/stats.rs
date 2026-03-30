@@ -15,6 +15,18 @@ pub struct StatsQuery {
     pub range: Option<String>, // 7d, 30d, 90d
 }
 
+/// 限制参数查询
+#[derive(Debug, Deserialize)]
+pub struct LimitQuery {
+    pub limit: Option<i32>,
+}
+
+/// 天数参数查询
+#[derive(Debug, Deserialize)]
+pub struct DaysQuery {
+    pub days: Option<i32>,
+}
+
 /// 高级统计响应
 #[derive(serde::Serialize)]
 pub struct AdvancedStatsResponse {
@@ -72,7 +84,7 @@ pub struct InboundStats {
 
 /// 获取高级统计
 pub async fn get_advanced_stats(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Query(params): Query<StatsQuery>,
 ) -> Result<Json<AdvancedStatsResponse>, StatusCode> {
     let days = match params.range.as_deref() {
@@ -82,22 +94,22 @@ pub async fn get_advanced_stats(
     };
 
     // 获取流量数据
-    let traffic = get_traffic_data(&pool, days).await?;
+    let traffic = get_traffic_data_internal(&state.pool, days).await?;
     
     // 获取用户排行
-    let top_users = get_top_users(&pool, 10).await?;
+    let top_users = get_top_users_internal(&state.pool, 10).await?;
     
     // 获取协议分布
-    let protocols = get_protocol_distribution(&pool).await?;
+    let protocols = get_protocol_distribution_internal(&state.pool).await?;
     
     // 获取活跃时段
-    let hourly = get_hourly_activity(&pool).await?;
+    let hourly = get_hourly_activity_internal(&state.pool).await?;
     
     // 获取流量预测
-    let forecast = get_traffic_forecast(&pool, 7).await?;
+    let forecast = get_traffic_forecast_internal(&state.pool, 7).await?;
     
     // 获取入站统计
-    let inbounds = get_inbound_stats(&pool).await?;
+    let inbounds = get_inbound_stats_internal(&state.pool).await?;
 
     Ok(Json(AdvancedStatsResponse {
         traffic,
@@ -109,8 +121,8 @@ pub async fn get_advanced_stats(
     }))
 }
 
-/// 获取流量数据
-async fn get_traffic_data(pool: &PgPool, days: i32) -> Result<Vec<TrafficData>, StatusCode> {
+/// 获取流量数据（内部函数）
+async fn get_traffic_data_internal(pool: &PgPool, days: i32) -> Result<Vec<TrafficData>, StatusCode> {
     let records = sqlx::query_as::<_, (String, i64, i64)>(
         r#"
         SELECT 
@@ -139,9 +151,16 @@ async fn get_traffic_data(pool: &PgPool, days: i32) -> Result<Vec<TrafficData>, 
 
 /// 获取用户流量排行
 pub async fn get_top_users(
-    pool: &PgPool,
-    limit: i32,
-) -> Result<Vec<UserTraffic>, StatusCode> {
+    State(state): State<crate::AppState>,
+    Query(params): Query<LimitQuery>,
+) -> Result<Json<Vec<UserTraffic>>, StatusCode> {
+    let limit = params.limit.unwrap_or(10);
+    let result = get_top_users_internal(&state.pool, limit).await?;
+    Ok(Json(result))
+}
+
+/// 获取用户排行（内部函数）
+async fn get_top_users_internal(pool: &PgPool, limit: i32) -> Result<Vec<UserTraffic>, StatusCode> {
     let records = sqlx::query_as::<_, (String, String, i64)>(
         r#"
         SELECT 
@@ -174,7 +193,15 @@ pub async fn get_top_users(
 }
 
 /// 获取协议分布
-pub async fn get_protocol_distribution(pool: &PgPool) -> Result<Vec<ProtocolStats>, StatusCode> {
+pub async fn get_protocol_distribution(
+    State(state): State<crate::AppState>,
+) -> Result<Json<Vec<ProtocolStats>>, StatusCode> {
+    let result = get_protocol_distribution_internal(&state.pool).await?;
+    Ok(Json(result))
+}
+
+/// 获取协议分布（内部函数）
+async fn get_protocol_distribution_internal(pool: &PgPool) -> Result<Vec<ProtocolStats>, StatusCode> {
     let records = sqlx::query_as::<_, (String, i32, i64)>(
         r#"
         SELECT 
@@ -204,7 +231,15 @@ pub async fn get_protocol_distribution(pool: &PgPool) -> Result<Vec<ProtocolStat
 }
 
 /// 获取活跃时段
-pub async fn get_hourly_activity(pool: &PgPool) -> Result<Vec<HourlyActivity>, StatusCode> {
+pub async fn get_hourly_activity(
+    State(state): State<crate::AppState>,
+) -> Result<Json<Vec<HourlyActivity>>, StatusCode> {
+    let result = get_hourly_activity_internal(&state.pool).await?;
+    Ok(Json(result))
+}
+
+/// 获取活跃时段（内部函数）
+async fn get_hourly_activity_internal(pool: &PgPool) -> Result<Vec<HourlyActivity>, StatusCode> {
     let records = sqlx::query_as::<_, (i32, i64, i64)>(
         r#"
         SELECT 
@@ -237,9 +272,16 @@ pub async fn get_hourly_activity(pool: &PgPool) -> Result<Vec<HourlyActivity>, S
 
 /// 获取流量预测（简单线性回归）
 pub async fn get_traffic_forecast(
-    pool: &PgPool,
-    days: i32,
-) -> Result<Vec<TrafficForecast>, StatusCode> {
+    State(state): State<crate::AppState>,
+    Query(params): Query<DaysQuery>,
+) -> Result<Json<Vec<TrafficForecast>>, StatusCode> {
+    let days = params.days.unwrap_or(7);
+    let result = get_traffic_forecast_internal(&state.pool, days).await?;
+    Ok(Json(result))
+}
+
+/// 获取流量预测（内部函数）
+async fn get_traffic_forecast_internal(pool: &PgPool, days: i32) -> Result<Vec<TrafficForecast>, StatusCode> {
     // 获取历史数据
     let historical = sqlx::query_as::<_, (String, i64)>(
         r#"
@@ -280,7 +322,7 @@ pub async fn get_traffic_forecast(
 }
 
 /// 获取入站统计
-async fn get_inbound_stats(pool: &PgPool) -> Result<Vec<InboundStats>, StatusCode> {
+async fn get_inbound_stats_internal(pool: &PgPool) -> Result<Vec<InboundStats>, StatusCode> {
     let records = sqlx::query_as::<_, (String, String, i64, Option<i64>, Option<chrono::DateTime<Utc>>)>(
         r#"
         SELECT 

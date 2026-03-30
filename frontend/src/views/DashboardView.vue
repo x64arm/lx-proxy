@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard">
-    <h2 class="page-title">📊 仪表盘</h2>
+    <h2 class="page-title">📊 {{ t('dashboard.title') }}</h2>
     
     <div v-if="!loading" class="dashboard-content">
       <!-- 统计卡片 -->
@@ -13,7 +13,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">{{ stats?.total_users || 0 }}</div>
-                <div class="stat-label">用户总数</div>
+                <div class="stat-label">{{ t('dashboard.totalUsers') }}</div>
               </div>
             </div>
           </el-card>
@@ -27,7 +27,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">{{ stats?.enabled_inbounds || 0 }}/{{ stats?.total_inbounds || 0 }}</div>
-                <div class="stat-label">入站配置</div>
+                <div class="stat-label">{{ t('dashboard.totalInbounds') }}</div>
               </div>
             </div>
           </el-card>
@@ -41,7 +41,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">{{ formatBytes(stats?.total_traffic_used || 0) }}</div>
-                <div class="stat-label">已用流量</div>
+                <div class="stat-label">{{ t('dashboard.trafficUsed') }}</div>
               </div>
             </div>
           </el-card>
@@ -55,7 +55,7 @@
               </div>
               <div class="stat-info">
                 <div class="stat-value">{{ formatBytes(systemStatus?.memory_used || 0) }}</div>
-                <div class="stat-label">内存使用</div>
+                <div class="stat-label">{{ t('dashboard.memoryUsage') }}</div>
               </div>
             </div>
           </el-card>
@@ -67,21 +67,21 @@
         <el-col :span="24">
           <el-card>
             <template #header>
-              <span>💻 系统状态</span>
+              <span>💻 {{ t('dashboard.systemStatus') }}</span>
             </template>
             <el-descriptions :column="4" border>
-              <el-descriptions-item label="CPU 使用率">
+              <el-descriptions-item :label="t('dashboard.cpuUsage')">
                 <el-progress :percentage="systemStatus?.cpu_usage || 0" :stroke-width="18" />
               </el-descriptions-item>
-              <el-descriptions-item label="内存使用">
+              <el-descriptions-item :label="t('dashboard.memoryUsage')">
                 {{ formatBytes(systemStatus?.memory_used || 0) }} / {{ formatBytes(systemStatus?.memory_total || 0) }}
               </el-descriptions-item>
-              <el-descriptions-item label="运行时间">
+              <el-descriptions-item :label="t('dashboard.uptime')">
                 {{ formatUptime(systemStatus?.uptime || 0) }}
               </el-descriptions-item>
-              <el-descriptions-item label="Xray 状态">
+              <el-descriptions-item :label="t('dashboard.xrayStatus')">
                 <el-tag :type="systemStatus?.xray_running ? 'success' : 'danger'">
-                  {{ systemStatus?.xray_running ? '✅ 运行中' : '❌ 已停止' }}
+                  {{ systemStatus?.xray_running ? '✅ ' + t('dashboard.running') : '❌ ' + t('dashboard.stopped') }}
                 </el-tag>
               </el-descriptions-item>
             </el-descriptions>
@@ -94,28 +94,28 @@
         <el-col :span="24">
           <el-card>
             <template #header>
-              <span>⚡ 快捷操作</span>
+              <span>⚡ {{ t('dashboard.quickActions') }}</span>
             </template>
             <div class="quick-actions">
               <router-link to="/users" class="action-btn">
                 <el-icon><User /></el-icon>
-                <span>用户管理</span>
+                <span>{{ t('layout.users') }}</span>
               </router-link>
               <router-link to="/inbounds" class="action-btn">
                 <el-icon><Connection /></el-icon>
-                <span>入站配置</span>
+                <span>{{ t('layout.inbounds') }}</span>
               </router-link>
               <router-link to="/traffic" class="action-btn">
                 <el-icon><DataLine /></el-icon>
-                <span>流量统计</span>
+                <span>{{ t('layout.traffic') }}</span>
               </router-link>
               <router-link to="/subscription" class="action-btn">
                 <el-icon><Link /></el-icon>
-                <span>订阅链接</span>
+                <span>{{ t('layout.subscription') }}</span>
               </router-link>
               <router-link to="/settings" class="action-btn">
                 <el-icon><Setting /></el-icon>
-                <span>系统设置</span>
+                <span>{{ t('layout.settings') }}</span>
               </router-link>
             </div>
           </el-card>
@@ -132,7 +132,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { User, Connection, DataLine, Link, Setting } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
+
+const { t } = useI18n()
 
 interface Stats {
   total_users: number
@@ -168,7 +171,7 @@ const formatUptime = (seconds: number): string => {
   const days = Math.floor(seconds / 86400)
   const hours = Math.floor((seconds % 86400) / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
-  return `${days}天 ${hours}小时 ${minutes}分钟`
+  return `${days} ${t('dashboard.days')} ${hours} ${t('dashboard.hours')} ${minutes} ${t('dashboard.minutes')}`
 }
 
 const fetchStats = async () => {

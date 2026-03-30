@@ -17,7 +17,7 @@ pub struct TestEmailRequest {
 
 /// 发送测试邮件
 pub async fn send_test_email(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<TestEmailRequest>,
 ) -> Result<StatusCode, StatusCode> {
     // 检查邮件配置
@@ -28,7 +28,7 @@ pub async fn send_test_email(
     let admin = sqlx::query_as::<_, (String, Option<String>)>(
         r#"SELECT username, email FROM users WHERE role = 'admin' LIMIT 1"#
     )
-    .fetch_optional(&pool)
+    .fetch_optional(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to fetch admin user: {}", e);
@@ -59,7 +59,7 @@ pub struct EmailConfigStatus {
 
 /// 获取邮件配置状态
 pub async fn get_email_config_status(
-    State(_pool): State<PgPool>,
+    State(_pool): State<crate::AppState>,
 ) -> Result<Json<EmailConfigStatus>, StatusCode> {
     use std::env;
 

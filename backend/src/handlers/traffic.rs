@@ -28,7 +28,7 @@ pub struct TrafficRecord {
 
 /// 获取所有流量统计
 pub async fn get_all_traffic(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Query(params): Query<TrafficQuery>,
 ) -> Result<Json<Vec<TrafficRecord>>, StatusCode> {
     let limit = params.limit.unwrap_or(30);
@@ -55,7 +55,7 @@ pub async fn get_all_traffic(
     .bind(params.start_date)
     .bind(params.end_date)
     .bind(limit)
-    .fetch_all(&pool)
+    .fetch_all(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to fetch traffic stats: {}", e);
@@ -67,7 +67,7 @@ pub async fn get_all_traffic(
 
 /// 获取指定入站的流量统计
 pub async fn get_inbound_traffic_stats(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Path(inbound_id): Path<Uuid>,
     Query(params): Query<TrafficQuery>,
 ) -> Result<Json<Vec<TrafficRecord>>, StatusCode> {
@@ -95,7 +95,7 @@ pub async fn get_inbound_traffic_stats(
     .bind(params.start_date)
     .bind(params.end_date)
     .bind(limit)
-    .fetch_all(&pool)
+    .fetch_all(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to fetch inbound traffic stats: {}", e);
@@ -107,7 +107,7 @@ pub async fn get_inbound_traffic_stats(
 
 /// 获取流量汇总统计
 pub async fn get_traffic_summary(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let summary = sqlx::query_as::<_, (i64, i64, i64)>(
         r#"
@@ -118,7 +118,7 @@ pub async fn get_traffic_summary(
         FROM traffic_logs
         "#
     )
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to fetch traffic summary: {}", e);
@@ -134,7 +134,7 @@ pub async fn get_traffic_summary(
 
 /// 记录流量日志（供定时任务调用）
 pub async fn record_traffic_log(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<serde_json::Value>,
 ) -> Result<StatusCode, StatusCode> {
     let inbound_id = req.get("inbound_id")
@@ -163,7 +163,7 @@ pub async fn record_traffic_log(
     .bind(inbound_id)
     .bind(upload)
     .bind(download)
-    .execute(&pool)
+    .execute(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to record traffic log: {}", e);

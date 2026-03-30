@@ -152,3 +152,538 @@ Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config e
 [info]: [ 'client ready' ]
 ✅ Sent via Feishu. Message ID: om_x100b5324bc0ac4a8b37f10f5410a453 (chat ou_c2b0bc829616f15c46c319f32ecf0fb3)
 [2026-03-23 18:00:13] Evening report sent successfully
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+│
+◇  Config warnings ────────────────────────────────────────────────────╮
+│                                                                      │
+│  - plugins.entries.mem0: plugin not found: mem0 (stale config entry  │
+│    ignored; remove it from plugins config)                           │
+│  - plugins.entries.openclaw-mem0-plugin: plugin not found:           │
+│    openclaw-mem0-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                   │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), qqbot (/root/.openclaw/extensions/qqbot/index.ts), wecom (/root/.openclaw/extensions/wecom/index.ts). Set plugins.allow to explicit trusted ids.
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[plugins] wecom failed during register from /root/.openclaw/extensions/wecom/index.ts: TypeError: api.registerHttpHandler is not a function
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[info]: [ 'client ready' ]
+✅ Sent via Feishu. Message ID: om_x100b5312440b5c84b3cf7a17512c682 (chat ou_c2b0bc829616f15c46c319f32ecf0fb3)
+[2026-03-24 18:00:13] Evening report sent successfully
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+│
+◇  Config warnings ────────────────────────────────────────────────────╮
+│                                                                      │
+│  - plugins.entries.mem0: plugin not found: mem0 (stale config entry  │
+│    ignored; remove it from plugins config)                           │
+│  - plugins.entries.openclaw-mem0-plugin: plugin not found:           │
+│    openclaw-mem0-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                   │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), qqbot (/root/.openclaw/extensions/qqbot/index.ts), wecom (/root/.openclaw/extensions/wecom/index.ts). Set plugins.allow to explicit trusted ids.
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[plugins] wecom failed during register from /root/.openclaw/extensions/wecom/index.ts: TypeError: api.registerHttpHandler is not a function
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[info]: [ 'client ready' ]
+✅ Sent via Feishu. Message ID: om_x100b530f6c18b884b35074a3f0ba45c (chat ou_c2b0bc829616f15c46c319f32ecf0fb3)
+[2026-03-25 18:00:14] Evening report sent successfully
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+│
+◇  Config warnings ────────────────────────────────────────────────────╮
+│                                                                      │
+│  - plugins.entries.mem0: plugin not found: mem0 (stale config entry  │
+│    ignored; remove it from plugins config)                           │
+│  - plugins.entries.openclaw-mem0-plugin: plugin not found:           │
+│    openclaw-mem0-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                   │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), qqbot (/root/.openclaw/extensions/qqbot/index.ts), wecom (/root/.openclaw/extensions/wecom/index.ts). Set plugins.allow to explicit trusted ids.
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[plugins] wecom failed during register from /root/.openclaw/extensions/wecom/index.ts: TypeError: api.registerHttpHandler is not a function
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[info]: [ 'client ready' ]
+✅ Sent via Feishu. Message ID: om_x100b5364740848a4b100b6d20da4288 (chat ou_c2b0bc829616f15c46c319f32ecf0fb3)
+[2026-03-26 18:00:12] Evening report sent successfully
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+│
+◇  Config warnings ────────────────────────────────────────────────────╮
+│                                                                      │
+│  - plugins.entries.mem0: plugin not found: mem0 (stale config entry  │
+│    ignored; remove it from plugins config)                           │
+│  - plugins.entries.openclaw-mem0-plugin: plugin not found:           │
+│    openclaw-mem0-plugin (stale config entry ignored; remove it from  │
+│    plugins config)                                                   │
+│                                                                      │
+├──────────────────────────────────────────────────────────────────────╯
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), qqbot (/root/.openclaw/extensions/qqbot/index.ts), wecom (/root/.openclaw/extensions/wecom/index.ts). Set plugins.allow to explicit trusted ids.
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[plugins] wecom failed during register from /root/.openclaw/extensions/wecom/index.ts: TypeError: api.registerHttpHandler is not a function
+Config warnings:\n- plugins.entries.mem0: plugin not found: mem0 (stale config entry ignored; remove it from plugins config)
+- plugins.entries.openclaw-mem0-plugin: plugin not found: openclaw-mem0-plugin (stale config entry ignored; remove it from plugins config)
+[info]: [ 'client ready' ]
+✅ Sent via Feishu. Message ID: om_x100b53511c0eec94b37045d146da15e (chat ou_c2b0bc829616f15c46c319f32ecf0fb3)
+[2026-03-27 18:00:12] Evening report sent successfully
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[info]: [ 'client ready' ]
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+✅ Sent via Feishu. Message ID: om_x100b534e25a884a4b3f9e9739395592
+[2026-03-28 18:00:23] Evening report sent successfully
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[info]: [ 'client ready' ]
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+✅ Sent via Feishu. Message ID: om_x100b53bbcdbb6d04b32057c7bd53fd5
+[2026-03-29 18:00:24] Evening report sent successfully
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[info]: [ 'client ready' ]
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] plugins.allow is empty; discovered non-bundled plugins may auto-load: adp-openclaw (/root/.openclaw/extensions/adp-openclaw/index.ts), ddingtalk (/root/.openclaw/extensions/ddingtalk/index.ts), lightclawbot (/root/.openclaw/extensions/lightclawbot/dist/index.js), memory-tdai (/root/.openclaw/extensions/memory-tdai/index.ts), openclaw-plugin-yuanbao (/root/.openclaw/extensions/openclaw-plugin-yuanbao/dist/index.js), openclaw-qqbot (/root/.openclaw/extensions/openclaw-qqbot/dist/index.js) (+2 more). Set plugins.allow to explicit trusted ids.
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+[plugins] feishu_doc: Registered feishu_doc, feishu_app_scopes
+[plugins] feishu_chat: Registered feishu_chat tool
+[plugins] feishu_wiki: Registered feishu_wiki tool
+[plugins] feishu_drive: Registered feishu_drive tool
+[plugins] feishu_bitable: Registered bitable tools
+[adp-openclaw] register() called - starting plugin registration
+[plugins] [adp-openclaw] Plugin register() called
+[adp-openclaw] Registering tool factory: adp_upload_file
+[plugins] [adp-openclaw] Registering tool factory: adp_upload_file
+[adp-openclaw] Tool adp_upload_file registered successfully
+[plugins] [adp-openclaw] Tool adp_upload_file registered successfully
+[adp-openclaw] Plugin registration complete
+[plugins] [adp-openclaw] Plugin registration complete
+[qqbot-channel-api] No QQBot accounts configured, skipping
+[qqbot-remind] Registered QQBot remind tool
+✅ Sent via Feishu. Message ID: om_x100b5390d5b4b8c0b3d6b7d1b5fd25a
+[2026-03-30 18:00:24] Evening report sent successfully

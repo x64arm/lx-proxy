@@ -35,7 +35,7 @@ pub struct TotpStatusResponse {
 
 /// 初始化 TOTP 设置
 pub async fn init_totp_setup(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<serde_json::Value>,
 ) -> Result<Json<TotpSetupResponse>, StatusCode> {
     let user_id = req
@@ -49,7 +49,7 @@ pub async fn init_totp_setup(
         "SELECT username FROM users WHERE id = $1"
     )
     .bind(user_id)
-    .fetch_optional(&pool)
+    .fetch_optional(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to fetch user: {}", e);
@@ -58,7 +58,7 @@ pub async fn init_totp_setup(
     .ok_or(StatusCode::NOT_FOUND)?;
 
     // 检查是否已启用 TOTP
-    let (enabled, _) = totp::get_totp_status(&pool, user_id)
+    let (enabled, _) = totp::get_totp_status(&state.pool, user_id)
         .await
         .map_err(|e| {
             tracing::error!("Failed to get TOTP status: {}", e);
@@ -70,7 +70,7 @@ pub async fn init_totp_setup(
     }
 
     // 设置 TOTP
-    let setup_result = totp::setup_totp(&pool, user_id, &username)
+    let setup_result = totp::setup_totp(&state.pool, user_id, &username)
         .await
         .map_err(|e| {
             tracing::error!("Failed to setup TOTP: {}", e);
@@ -87,11 +87,11 @@ pub async fn init_totp_setup(
 
 /// 验证并启用 TOTP
 pub async fn verify_and_enable_totp(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     path: Path<Uuid>,
     Json(req): Json<TotpVerifyRequest>,
 ) -> Result<StatusCode, StatusCode> {
-    let result = totp::enable_totp(&pool, path.0, &req.code)
+    let result = totp::enable_totp(&state.pool, path.0, &req.code)
         .await
         .map_err(|e| {
             tracing::error!("Failed to verify TOTP: {}", e);
@@ -107,7 +107,7 @@ pub async fn verify_and_enable_totp(
 
 /// 禁用 TOTP
 pub async fn disable_totp(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     path: Path<Uuid>,
     Json(req): Json<serde_json::Value>,
 ) -> Result<StatusCode, StatusCode> {
@@ -118,7 +118,7 @@ pub async fn disable_totp(
 
     // TODO: 验证密码（应该由认证中间件处理）
 
-    let result = totp::disable_totp(&pool, path.0, password)
+    let result = totp::disable_totp(&state.pool, path.0, password)
         .await
         .map_err(|e| {
             tracing::error!("Failed to disable TOTP: {}", e);
@@ -134,10 +134,10 @@ pub async fn disable_totp(
 
 /// 获取 TOTP 状态
 pub async fn get_totp_status(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     path: Path<Uuid>,
 ) -> Result<Json<TotpStatusResponse>, StatusCode> {
-    let (enabled, verified) = totp::get_totp_status(&pool, path.0)
+    let (enabled, verified) = totp::get_totp_status(&state.pool, path.0)
         .await
         .map_err(|e| {
             tracing::error!("Failed to get TOTP status: {}", e);
@@ -149,7 +149,7 @@ pub async fn get_totp_status(
         "SELECT backup_codes FROM user_totp_configs WHERE user_id = $1"
     )
     .bind(path.0)
-    .fetch_optional(&pool)
+    .fetch_optional(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to fetch backup codes: {}", e);
@@ -169,7 +169,7 @@ pub async fn get_totp_status(
 
 /// 使用备用代码登录
 pub async fn login_with_backup_code(
-    State(pool): State<PgPool>,
+    State(state): State<crate::AppState>,
     Json(req): Json<serde_json::Value>,
 ) -> Result<StatusCode, StatusCode> {
     let user_id = req
@@ -183,7 +183,7 @@ pub async fn login_with_backup_code(
         .and_then(|v| v.as_str())
         .ok_or(StatusCode::BAD_REQUEST)?;
 
-    let valid = totp::verify_backup_code(&pool, user_id, backup_code)
+    let valid = totp::verify_backup_code(&state.pool, user_id, backup_code)
         .await
         .map_err(|e| {
             tracing::error!("Failed to verify backup code: {}", e);

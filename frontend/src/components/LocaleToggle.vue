@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { setLocale, getCurrentLocale, getSupportedLocales } from '@/i18n'
+import { setLocale, getCurrentLocale, getSupportedLocales } from '../i18n'
 import { useI18n } from 'vue-i18n'
 
 const { locale } = useI18n()
@@ -31,7 +31,10 @@ const currentLocale = ref(supportedLocales[0])
 
 onMounted(() => {
   const code = getCurrentLocale()
-  currentLocale.value = supportedLocales.find(l => l.code === code) || supportedLocales[0]
+  const found = supportedLocales.find(l => l.code === code)
+  if (found) {
+    currentLocale.value = found
+  }
 })
 
 const currentLocaleName = computed(() => currentLocale.value.name)
@@ -41,7 +44,7 @@ const handleLocaleChange = (code: string) => {
   if (newLocale) {
     currentLocale.value = newLocale
     setLocale(code)
-    locale.value = code
+    locale.value = code as any
   }
 }
 </script>

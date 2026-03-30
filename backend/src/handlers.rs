@@ -10,6 +10,7 @@ use argon2::PasswordVerifier;
 use crate::models::*;
 use crate::auth::{generate_token, verify_token};
 use crate::xray;
+use crate::AppState;
 
 pub mod traffic;
 pub mod email;
@@ -24,7 +25,7 @@ pub async fn health() -> &'static str {
 
 /// 获取统计数据
 pub async fn get_stats(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
 ) -> Result<Json<Stats>, StatusCode> {
     let stats = sqlx::query_as::<_, (i64, i64, i64, i64, Option<i64>)>(
         r#"SELECT 
@@ -35,7 +36,7 @@ pub async fn get_stats(
             (SELECT SUM(traffic_limit) FROM inbound_configs WHERE traffic_limit IS NOT NULL) as total_traffic_limit
         "#
     )
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to get stats: {}", e);
@@ -53,14 +54,14 @@ pub async fn get_stats(
 
 /// 用户登录
 pub async fn login(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Json(req): Json<LoginRequest>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let user = sqlx::query_as::<_, User>(
         r#"SELECT * FROM users WHERE username = $1 LIMIT 1"#
     )
     .bind(&req.username)
-    .fetch_optional(&pool)
+    .fetch_optional(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Database error during login: {}", e);
@@ -109,7 +110,7 @@ pub async fn logout() -> Result<StatusCode, StatusCode> {
 
 /// 获取当前用户
 pub async fn get_current_user(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     headers: axum::http::HeaderMap,
 ) -> Result<Json<User>, StatusCode> {
     let token = headers
@@ -124,7 +125,7 @@ pub async fn get_current_user(
         r#"SELECT * FROM users WHERE id = $1 LIMIT 1"#
     )
     .bind(Uuid::parse_str(&claims.sub).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::NOT_FOUND)?;
 
@@ -133,12 +134,12 @@ pub async fn get_current_user(
 
 /// 获取用户列表
 pub async fn list_users(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
 ) -> Result<Json<Vec<User>>, StatusCode> {
     let users = sqlx::query_as::<_, User>(
         r#"SELECT * FROM users ORDER BY created_at DESC"#
     )
-    .fetch_all(&pool)
+    .fetch_all(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to list users: {}", e);
@@ -150,7 +151,7 @@ pub async fn list_users(
 
 /// 创建用户
 pub async fn create_user(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Json(req): Json<CreateUserRequest>,
 ) -> Result<Json<User>, StatusCode> {
     use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
@@ -172,7 +173,7 @@ pub async fn create_user(
     .bind(&req.username)
     .bind(&password_hash)
     .bind(req.role.as_deref().unwrap_or("user"))
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to create user: {}", e);
@@ -188,14 +189,14 @@ pub async fn create_user(
 
 /// 获取用户
 pub async fn get_user(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<User>, StatusCode> {
     let user = sqlx::query_as::<_, User>(
         r#"SELECT * FROM users WHERE id = $1 LIMIT 1"#
     )
     .bind(id)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::NOT_FOUND)?;
 
@@ -204,7 +205,7 @@ pub async fn get_user(
 
 /// 更新用户
 pub async fn update_user(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
     Json(req): Json<CreateUserRequest>,
 ) -> Result<Json<User>, StatusCode> {
@@ -223,7 +224,7 @@ pub async fn update_user(
             r#"SELECT password_hash FROM users WHERE id = $1"#
         )
         .bind(id)
-        .fetch_one(&pool)
+        .fetch_one(&state.pool)
         .await
         .map_err(|_| StatusCode::NOT_FOUND)?;
         old_user.password_hash
@@ -236,7 +237,7 @@ pub async fn update_user(
     .bind(&password_hash)
     .bind(req.role.as_deref().unwrap_or("user"))
     .bind(id)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -245,12 +246,12 @@ pub async fn update_user(
 
 /// 删除用户
 pub async fn delete_user(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<StatusCode, StatusCode> {
     sqlx::query("DELETE FROM users WHERE id = $1")
         .bind(id)
-        .execute(&pool)
+        .execute(&state.pool)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -259,12 +260,12 @@ pub async fn delete_user(
 
 /// 获取入站配置列表
 pub async fn list_inbounds(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
 ) -> Result<Json<Vec<InboundConfig>>, StatusCode> {
     let inbounds = sqlx::query_as::<_, InboundConfig>(
         r#"SELECT * FROM inbound_configs ORDER BY created_at DESC"#
     )
-    .fetch_all(&pool)
+    .fetch_all(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to list inbounds: {}", e);
@@ -276,7 +277,7 @@ pub async fn list_inbounds(
 
 /// 创建入站配置
 pub async fn create_inbound(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Json(req): Json<CreateInboundRequest>,
 ) -> Result<Json<InboundConfig>, StatusCode> {
     let inbound = sqlx::query_as::<_, InboundConfig>(
@@ -294,7 +295,7 @@ pub async fn create_inbound(
     .bind(req.traffic_limit)
     .bind(req.expire_at)
     .bind(req.ip_limit)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to create inbound: {}", e);
@@ -306,7 +307,7 @@ pub async fn create_inbound(
     })?;
 
     // 更新 Xray 配置
-    if let Err(e) = update_xray_config_from_db(&pool).await {
+    if let Err(e) = update_xray_config_from_db(&state.pool).await {
         tracing::warn!("Failed to update Xray config: {}", e);
     }
 
@@ -315,14 +316,14 @@ pub async fn create_inbound(
 
 /// 获取入站配置
 pub async fn get_inbound(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<InboundConfig>, StatusCode> {
     let inbound = sqlx::query_as::<_, InboundConfig>(
         r#"SELECT * FROM inbound_configs WHERE id = $1 LIMIT 1"#
     )
     .bind(id)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::NOT_FOUND)?;
 
@@ -331,7 +332,7 @@ pub async fn get_inbound(
 
 /// 更新入站配置
 pub async fn update_inbound(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
     Json(req): Json<UpdateInboundRequest>,
 ) -> Result<Json<InboundConfig>, StatusCode> {
@@ -359,12 +360,12 @@ pub async fn update_inbound(
     .bind(req.expire_at)
     .bind(req.ip_limit)
     .bind(id)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     // 更新 Xray 配置
-    if let Err(e) = update_xray_config_from_db(&pool).await {
+    if let Err(e) = update_xray_config_from_db(&state.pool).await {
         tracing::warn!("Failed to update Xray config: {}", e);
     }
 
@@ -373,17 +374,17 @@ pub async fn update_inbound(
 
 /// 删除入站配置
 pub async fn delete_inbound(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<StatusCode, StatusCode> {
     sqlx::query("DELETE FROM inbound_configs WHERE id = $1")
         .bind(id)
-        .execute(&pool)
+        .execute(&state.pool)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     // 更新 Xray 配置
-    if let Err(e) = update_xray_config_from_db(&pool).await {
+    if let Err(e) = update_xray_config_from_db(&state.pool).await {
         tracing::warn!("Failed to update Xray config: {}", e);
     }
 
@@ -392,14 +393,14 @@ pub async fn delete_inbound(
 
 /// 重置流量
 pub async fn reset_traffic(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<InboundConfig>, StatusCode> {
     let inbound = sqlx::query_as::<_, InboundConfig>(
         r#"UPDATE inbound_configs SET traffic_used = 0, updated_at = NOW() WHERE id = $1 RETURNING *"#
     )
     .bind(id)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::NOT_FOUND)?;
 
@@ -408,14 +409,14 @@ pub async fn reset_traffic(
 
 /// 获取订阅链接
 pub async fn get_subscription_links(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let inbound = sqlx::query_as::<_, InboundConfig>(
         r#"SELECT * FROM inbound_configs WHERE id = $1 LIMIT 1"#
     )
     .bind(id)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::NOT_FOUND)?;
 
@@ -433,12 +434,12 @@ pub async fn get_subscription_links(
 
 /// 获取流量统计
 pub async fn get_traffic_stats(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let stats = sqlx::query_as::<_, (i64, i64)>(
         r#"SELECT COALESCE(SUM(upload), 0), COALESCE(SUM(download), 0) FROM traffic_logs"#
     )
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -451,7 +452,7 @@ pub async fn get_traffic_stats(
 
 /// 获取入站流量
 pub async fn get_inbound_traffic(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(id): Path<Uuid>,
     Query(params): Query<std::collections::HashMap<String, String>>,
 ) -> Result<Json<Vec<TrafficLog>>, StatusCode> {
@@ -462,7 +463,7 @@ pub async fn get_inbound_traffic(
     )
     .bind(id)
     .bind(limit)
-    .fetch_all(&pool)
+    .fetch_all(&state.pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -471,12 +472,12 @@ pub async fn get_inbound_traffic(
 
 /// 获取系统配置
 pub async fn get_config(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
 ) -> Result<Json<Vec<SystemConfig>>, StatusCode> {
     let configs = sqlx::query_as::<_, SystemConfig>(
         r#"SELECT * FROM system_configs ORDER BY key"#
     )
-    .fetch_all(&pool)
+    .fetch_all(&state.pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -485,7 +486,7 @@ pub async fn get_config(
 
 /// 更新系统配置
 pub async fn update_config(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Json(req): Json<SystemConfig>,
 ) -> Result<Json<SystemConfig>, StatusCode> {
     let config = sqlx::query_as::<_, SystemConfig>(
@@ -497,7 +498,7 @@ pub async fn update_config(
     .bind(&req.key)
     .bind(req.value)
     .bind(req.description)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -506,12 +507,12 @@ pub async fn update_config(
 
 /// 获取 Xray 配置
 pub async fn get_xray_config(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let config = sqlx::query_scalar::<_, serde_json::Value>(
         r#"SELECT config FROM xray_configs WHERE is_active = true LIMIT 1"#
     )
-    .fetch_optional(&pool)
+    .fetch_optional(&state.pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -520,7 +521,7 @@ pub async fn get_xray_config(
 
 /// 更新 Xray 配置
 pub async fn update_xray_config(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Json(req): Json<serde_json::Value>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let config = sqlx::query_scalar::<_, serde_json::Value>(
@@ -531,7 +532,7 @@ pub async fn update_xray_config(
     )
     .bind("default")
     .bind(req)
-    .fetch_one(&pool)
+    .fetch_one(&state.pool)
     .await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
