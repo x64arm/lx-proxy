@@ -17,6 +17,7 @@ pub mod email;
 pub mod totp;
 pub mod batch;
 pub mod stats;
+pub mod subscription;
 
 /// 健康检查
 pub async fn health() -> &'static str {

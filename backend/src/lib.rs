@@ -101,7 +101,16 @@ pub fn create_app(state: AppState) -> Router {
         // 缓存统计与监控
         .route("/api/cache/stats", get(cache_stats::get_cache_stats))
         .route("/api/cache/health", get(cache_stats::check_cache_health))
-        .route("/api/cache/reset", get(cache_stats::reset_cache_stats));
+        .route("/api/cache/reset", get(cache_stats::reset_cache_stats))
+        
+        // P13 订阅链接优化
+        .route("/api/sub/{id}/encrypt", post(handlers::subscription::generate_encrypted_link))
+        .route("/api/sub/{id}/qrcode", get(handlers::subscription::generate_qrcode))
+        .route("/api/sub/qrcode/batch", get(handlers::subscription::batch_generate_qrcodes))
+        .route("/api/sub/{id}/stats", get(handlers::subscription::get_access_stats))
+        .route("/api/sub/{id}/clash", get(handlers::subscription::generate_clash_config))
+        .route("/api/sub/{id}/v2rayn", get(handlers::subscription::generate_v2rayn_config))
+        .route("/api/sub/{id}/singbox", get(handlers::subscription::generate_singbox_config));
 
     public_routes
         .merge(protected_routes)

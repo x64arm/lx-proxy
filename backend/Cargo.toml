@@ -66,6 +66,9 @@ totp-rs = "5"
 base32 = "0.5"
 sha1 = "0.10"
 
+# Base64 编码（订阅链接）
+base64 = "0.22"
+
 [dev-dependencies]
 # 测试框架
 tokio-test = "0.4"
