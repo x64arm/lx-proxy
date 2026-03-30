@@ -2,13 +2,13 @@
 // 功能：订阅链接加密、二维码生成、访问统计、多客户端支持
 
 use axum::{
-    extract::{Path, Query, State},
+    extract::{Path, State},
     http::StatusCode,
     Json,
 };
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-use crate::AppState;
+use crate::{AppState, models::InboundConfig};
 
 /// 订阅链接信息
 #[derive(Debug, Serialize, Deserialize)]
@@ -60,7 +60,7 @@ pub async fn generate_encrypted_link(
     Path(id): Path<Uuid>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     // 获取入站配置
-    let inbound = sqlx::query_as::<_, crate::InboundConfig>(
+    let inbound: InboundConfig = sqlx::query_as(
         r#"SELECT * FROM inbound_configs WHERE id = $1 LIMIT 1"#
     )
     .bind(id)
@@ -89,7 +89,7 @@ pub async fn generate_encrypted_link(
 
     Ok(Json(serde_json::json!({
         "inbound_id": id,
-        "inbound_name": inbound.remark,
+        "inbound_name": inbound.tag,
         "protocol": inbound.protocol,
         "subscription_url": subscription_url,
         "encrypted_url": encrypted_url,
@@ -105,21 +105,22 @@ pub async fn generate_qrcode(
     let base_url = std::env::var("BASE_URL")
         .unwrap_or_else(|_| "http://localhost:8080".to_string());
     let subscription_url = format!("{}/api/sub/{}", base_url, id);
+    let base64_image = format!("data:image/png;base64,{}", base64_encode(&subscription_url));
 
     // 使用 qrcode 库生成二维码（需要添加依赖）
     // 这里返回简化版本
-    Ok(QRCodeData {
+    Ok(Json(QRCodeData {
         url: subscription_url,
-        base64_image: format!("data:image/png;base64,{}", base64_encode(&subscription_url)),
-    })
+        base64_image,
+    }))
 }
 
 /// 批量生成二维码
 pub async fn batch_generate_qrcodes(
     State(state): State<AppState>,
 ) -> Result<Json<Vec<QRCodeData>>, StatusCode> {
-    let inbounds = sqlx::query_as::<_, crate::InboundConfig>(
-        r#"SELECT * FROM inbound_configs WHERE enable = true ORDER BY remark"#
+    let inbounds: Vec<InboundConfig> = sqlx::query_as(
+        r#"SELECT * FROM inbound_configs WHERE enable = true ORDER BY tag"#
     )
     .fetch_all(&state.pool)
     .await
@@ -230,7 +231,7 @@ pub async fn generate_clash_config(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<String, StatusCode> {
-    let inbound = sqlx::query_as::<_, crate::InboundConfig>(
+    let inbound: InboundConfig = sqlx::query_as(
         r#"SELECT * FROM inbound_configs WHERE id = $1 LIMIT 1"#
     )
     .bind(id)
@@ -245,15 +246,13 @@ pub async fn generate_clash_config(
     type: {}
     server: example.com
     port: {}
-    uuid: {}
     alterId: 0
     cipher: auto
     tls: true
 "#,
-        inbound.remark,
+        inbound.tag,
         inbound.protocol,
-        inbound.port,
-        inbound.uuid.unwrap_or_default()
+        inbound.port
     );
 
     Ok(config)
@@ -264,7 +263,7 @@ pub async fn generate_v2rayn_config(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let inbound = sqlx::query_as::<_, crate::InboundConfig>(
+    let inbound: InboundConfig = sqlx::query_as(
         r#"SELECT * FROM inbound_configs WHERE id = $1 LIMIT 1"#
     )
     .bind(id)
@@ -272,13 +271,17 @@ pub async fn generate_v2rayn_config(
     .await
     .map_err(|_| StatusCode::NOT_FOUND)?;
 
-    // 生成 V2RayN vmess 链接
+    // 生成 V2RayN vmess 链接（简化版本，从 settings 中提取 UUID）
+    let uuid = inbound.settings.get("uuid")
+        .and_then(|v| v.as_str())
+        .unwrap_or("00000000-0000-0000-0000-000000000000");
+
     let vmess_config = serde_json::json!({
         "v": "2",
-        "ps": inbound.remark,
+        "ps": inbound.tag,
         "add": "example.com",
         "port": inbound.port,
-        "id": inbound.uuid.unwrap_or_default(),
+        "id": uuid,
         "aid": 0,
         "net": "ws",
         "type": "none",
@@ -301,7 +304,7 @@ pub async fn generate_singbox_config(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<serde_json::Value>, StatusCode> {
-    let inbound = sqlx::query_as::<_, crate::InboundConfig>(
+    let inbound: InboundConfig = sqlx::query_as(
         r#"SELECT * FROM inbound_configs WHERE id = $1 LIMIT 1"#
     )
     .bind(id)
@@ -309,14 +312,19 @@ pub async fn generate_singbox_config(
     .await
     .map_err(|_| StatusCode::NOT_FOUND)?;
 
+    // 从 settings 中提取 UUID
+    let uuid = inbound.settings.get("uuid")
+        .and_then(|v| v.as_str())
+        .unwrap_or("00000000-0000-0000-0000-000000000000");
+
     let config = serde_json::json!({
         "outbounds": [
             {
                 "type": inbound.protocol,
-                "tag": inbound.remark,
+                "tag": inbound.tag,
                 "server": "example.com",
                 "server_port": inbound.port,
-                "uuid": inbound.uuid.unwrap_or_default()
+                "uuid": uuid
             }
         ]
     });
