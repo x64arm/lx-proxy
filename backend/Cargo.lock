@@ -1430,6 +1430,7 @@ version = "0.1.0"
 dependencies = [
  "argon2",
  "assert-json-diff",
+ "async-trait",
  "axum",
  "base32",
  "base64",

@@ -1,4 +1,4 @@
-use lx_proxy_backend::{create_app, AppState, db, cache, websocket, tasks, xray};
+use lx_proxy_backend::{create_app, AppState, db, cache, websocket, tasks, xray, plugins};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
@@ -39,11 +39,18 @@ async fn main() {
     let ws_manager = websocket::WebSocketManager::new(cache.clone());
     tracing::info!("✅ WebSocket manager initialized");
 
+    // 初始化插件系统
+    let plugin_registry = plugins::create_registry();
+    let plugin_loader = plugins::PluginLoader::new(plugin_registry.clone());
+    plugin_loader.load_builtin_plugins(&pool).await.expect("Failed to load plugins");
+    tracing::info!("✅ Plugin system initialized");
+
     // 创建应用状态
     let state = AppState {
         pool: pool.clone(),
         ws_manager: ws_manager.clone(),
         cache: cache.clone(),
+        plugin_registry: plugin_registry.clone(),
     };
 
     // 启动定时任务

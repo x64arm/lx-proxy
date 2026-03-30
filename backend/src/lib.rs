@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post},
+    routing::{get, post, put},
     Router,
 };
 use sqlx::PgPool;
@@ -22,6 +22,7 @@ pub mod cache;
 pub mod websocket;
 pub mod optimization;
 pub mod cache_stats;
+pub mod plugins;
 
 /// 应用状态
 #[derive(Clone)]
@@ -29,6 +30,7 @@ pub struct AppState {
     pub pool: PgPool,
     pub ws_manager: websocket::WebSocketManager,
     pub cache: cache::CacheClient,
+    pub plugin_registry: plugins::PluginRegistry,
 }
 
 /// 创建应用路由
@@ -110,7 +112,14 @@ pub fn create_app(state: AppState) -> Router {
         .route("/api/sub/{id}/stats", get(handlers::subscription::get_access_stats))
         .route("/api/sub/{id}/clash", get(handlers::subscription::generate_clash_config))
         .route("/api/sub/{id}/v2rayn", get(handlers::subscription::generate_v2rayn_config))
-        .route("/api/sub/{id}/singbox", get(handlers::subscription::generate_singbox_config));
+        .route("/api/sub/{id}/singbox", get(handlers::subscription::generate_singbox_config))
+        
+        // P14 插件系统
+        .route("/api/plugins", get(handlers::plugins::list_plugins))
+        .route("/api/plugins/{plugin_id}", get(handlers::plugins::get_plugin))
+        .route("/api/plugins/{plugin_id}/toggle", post(handlers::plugins::toggle_plugin))
+        .route("/api/plugins/{plugin_id}/config", put(handlers::plugins::update_config))
+        .route("/api/plugins/{plugin_id}/test", post(handlers::plugins::test_plugin));
 
     public_routes
         .merge(protected_routes)
