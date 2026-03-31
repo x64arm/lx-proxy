@@ -23,6 +23,7 @@ pub mod websocket;
 pub mod optimization;
 pub mod cache_stats;
 pub mod plugins;
+pub mod node;
 
 /// 应用状态
 #[derive(Clone)]
@@ -119,7 +120,16 @@ pub fn create_app(state: AppState) -> Router {
         .route("/api/plugins/{plugin_id}", get(handlers::plugins::get_plugin))
         .route("/api/plugins/{plugin_id}/toggle", post(handlers::plugins::toggle_plugin))
         .route("/api/plugins/{plugin_id}/config", put(handlers::plugins::update_config))
-        .route("/api/plugins/{plugin_id}/test", post(handlers::plugins::test_plugin));
+        .route("/api/plugins/{plugin_id}/test", post(handlers::plugins::test_plugin))
+        
+        // P15 多节点管理
+        .route("/api/nodes", get(node::list_nodes).post(node::create_node))
+        .route("/api/nodes/stats", get(node::get_all_nodes_stats))
+        .route("/api/nodes/{node_id}", get(node::get_node).put(node::update_node).delete(node::delete_node))
+        .route("/api/nodes/{node_id}/stats", get(node::get_node_stats))
+        .route("/api/nodes/{node_id}/health", post(node::check_health))
+        .route("/api/nodes/{node_id}/sync", post(node::sync_node))
+        .route("/api/nodes/batch/sync", post(node::batch_sync));
 
     public_routes
         .merge(protected_routes)
