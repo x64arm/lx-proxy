@@ -19,6 +19,7 @@ pub mod batch;
 pub mod stats;
 pub mod subscription;
 pub mod plugins;
+pub mod health;
 
 /// 健康检查
 pub async fn health() -> &'static str {

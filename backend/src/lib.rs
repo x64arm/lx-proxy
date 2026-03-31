@@ -45,8 +45,15 @@ pub fn create_app(state: AppState) -> Router {
         .allow_methods(Any)
         .allow_headers(Any);
 
+    // P17 健康检查端点（公开访问）
+    let health_routes = Router::new()
+        .route("/health", get(handlers::health::health_check))
+        .route("/health/live", get(handlers::health::liveness_check))
+        .route("/health/ready", get(handlers::health::readiness_check))
+        .route("/metrics", get(handlers::health::get_metrics));
+
     let public_routes = Router::new()
-        .route("/health", get(handlers::health))
+        .merge(health_routes)
         .route("/api/auth/login", post(handlers::login));
 
     let protected_routes = Router::new()
