@@ -1,4 +1,4 @@
-use lx_proxy_backend::{create_app, AppState, db, cache, websocket, tasks, xray, plugins};
+use lx_proxy_backend::{create_app, AppState, db, cache, websocket, tasks, xray, plugins, middleware};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
@@ -45,12 +45,17 @@ async fn main() {
     plugin_loader.load_builtin_plugins(&pool).await.expect("Failed to load plugins");
     tracing::info!("✅ Plugin system initialized");
 
+    // 初始化速率限制器（P18 安全加固）
+    let rate_limiter = middleware::RateLimiterStateWrapper::new(middleware::RateLimiterConfig::default());
+    tracing::info!("✅ Rate limiter initialized (100 req/min, 5 login attempts/min)");
+
     // 创建应用状态
     let state = AppState {
         pool: pool.clone(),
         ws_manager: ws_manager.clone(),
         cache: cache.clone(),
         plugin_registry: plugin_registry.clone(),
+        rate_limiter: rate_limiter.clone(),
     };
 
     // 启动定时任务

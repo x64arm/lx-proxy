@@ -24,6 +24,7 @@ pub mod optimization;
 pub mod cache_stats;
 pub mod plugins;
 pub mod node;
+pub mod middleware;
 
 /// 应用状态
 #[derive(Clone)]
@@ -32,6 +33,7 @@ pub struct AppState {
     pub ws_manager: websocket::WebSocketManager,
     pub cache: cache::CacheClient,
     pub plugin_registry: plugins::PluginRegistry,
+    pub rate_limiter: middleware::RateLimiterStateWrapper,
 }
 
 /// 创建应用路由
@@ -131,8 +133,24 @@ pub fn create_app(state: AppState) -> Router {
         .route("/api/nodes/{node_id}/sync", post(node::sync_node))
         .route("/api/nodes/batch/sync", post(node::batch_sync));
 
+    // 登录路由使用更严格的速率限制
+    let login_routes = Router::new()
+        .route("/api/auth/login", post(handlers::login))
+        .layer(axum::middleware::from_fn_with_state(
+            state.rate_limiter.clone(),
+            middleware::login_rate_limiter_middleware,
+        ));
+
+    let public_routes = Router::new()
+        .route("/health", get(handlers::health))
+        .merge(login_routes);
+
     public_routes
         .merge(protected_routes)
+        .layer(axum::middleware::from_fn_with_state(
+            state.rate_limiter.clone(),
+            middleware::rate_limiter_middleware,
+        ))
         .layer(axum::middleware::from_fn_with_state(state.clone(), auth::auth_middleware))
         .layer(cors)
         .layer(CompressionLayer::new())
