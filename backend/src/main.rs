@@ -1,4 +1,4 @@
-use lx_proxy_backend::{create_app, AppState, db, cache, websocket, tasks, xray, plugins, middleware};
+use lx_proxy_backend::{create_app, AppState, db, cache, websocket, tasks, xray, plugins, middleware, crypto};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
@@ -48,6 +48,18 @@ async fn main() {
     // 初始化速率限制器（P18 安全加固）
     let rate_limiter = middleware::RateLimiterStateWrapper::new(middleware::RateLimiterConfig::default());
     tracing::info!("✅ Rate limiter initialized (100 req/min, 5 login attempts/min)");
+
+    // 初始化数据加密器（P18 安全加固）
+    match crypto::DataEncryptor::from_env() {
+        Ok(_encryptor) => {
+            tracing::info!("✅ Data encryptor initialized (AES-256-GCM)");
+            tracing::info!("🔐 Sensitive data encryption enabled");
+        }
+        Err(e) => {
+            tracing::warn!("⚠️  Data encryptor not initialized: {}", e);
+            tracing::warn!("⚠️  Set ENCRYPTION_KEY environment variable to enable encryption");
+        }
+    }
 
     // 创建应用状态
     let state = AppState {

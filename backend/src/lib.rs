@@ -26,6 +26,7 @@ pub mod plugins;
 pub mod node;
 pub mod middleware;
 pub mod audit;
+pub mod crypto;
 
 /// 应用状态
 #[derive(Clone)]
