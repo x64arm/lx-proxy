@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post, put},
+    routing::{get, post, put, delete},
     Router,
 };
 use sqlx::PgPool;
@@ -25,6 +25,7 @@ pub mod cache_stats;
 pub mod plugins;
 pub mod node;
 pub mod middleware;
+pub mod audit;
 
 /// 应用状态
 #[derive(Clone)]
@@ -131,7 +132,18 @@ pub fn create_app(state: AppState) -> Router {
         .route("/api/nodes/{node_id}/stats", get(node::get_node_stats))
         .route("/api/nodes/{node_id}/health", post(node::check_health))
         .route("/api/nodes/{node_id}/sync", post(node::sync_node))
-        .route("/api/nodes/batch/sync", post(node::batch_sync));
+        .route("/api/nodes/batch/sync", post(node::batch_sync))
+        
+        // P16 审计日志系统
+        .route("/api/audit/logs", get(audit::query_audit_logs))
+        .route("/api/audit/logs/{log_id}", get(audit::get_audit_log))
+        .route("/api/audit/stats", get(audit::get_audit_stats))
+        .route("/api/audit/login-logs", get(audit::query_login_logs))
+        .route("/api/audit/config-history", get(audit::query_config_history))
+        .route("/api/audit/config-history/{change_id}", get(audit::get_config_change))
+        .route("/api/audit/cleanup", post(audit::cleanup_audit_logs))
+        .route("/api/audit/ip-bans", get(audit::get_ip_bans))
+        .route("/api/audit/ip-bans/{ip_address}", delete(audit::unban_ip));
 
     // 登录路由使用更严格的速率限制
     let login_routes = Router::new()
