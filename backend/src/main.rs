@@ -1,5 +1,8 @@
-use lx_proxy_backend::{create_app, AppState, db, cache, websocket, tasks, xray, plugins, middleware, crypto};
+use lx_proxy_backend::{create_app, AppState, db, cache, websocket, tasks, xray, plugins, middleware, crypto, cluster, openapi};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use uuid::Uuid;
+use std::sync::Arc;
+use tokio::sync::RwLock;
 
 #[tokio::main]
 async fn main() {
@@ -61,6 +64,30 @@ async fn main() {
         }
     }
 
+    // 初始化 P19 高可用集群模块 (MVP 简化版)
+    let cluster_state = Arc::new(RwLock::new(lx_proxy_backend::cluster::ClusterApiState::default()));
+    
+    if std::env::var("ENABLE_CLUSTER").unwrap_or_else(|_| "false".to_string()) == "true" {
+        let node_id = std::env::var("NODE_ID")
+            .ok()
+            .and_then(|s| Uuid::parse_str(&s).ok())
+            .unwrap_or_else(Uuid::new_v4);
+        let node_name = std::env::var("NODE_NAME")
+            .unwrap_or_else(|_| format!("node-{}", node_id.to_string()[..8].to_string()));
+        let node_address = std::env::var("NODE_ADDRESS")
+            .unwrap_or_else(|_| "127.0.0.1:8080".to_string());
+        
+        match cluster::init_cluster(node_id, node_name.clone(), node_address).await {
+            Ok(ctx) => {
+                let mut state = cluster_state.write().await;
+                state.context = Some(ctx);
+            }
+            Err(e) => {
+                tracing::warn!("⚠️  Cluster module initialization failed: {}", e);
+            }
+        }
+    }
+
     // 创建应用状态
     let state = AppState {
         pool: pool.clone(),
@@ -75,6 +102,9 @@ async fn main() {
 
     // 创建应用路由
     let app = create_app(state);
+    
+    // 添加 Swagger UI（P20 API 文档）
+    let app = app.merge(openapi::create_swagger_ui());
 
     // 启动服务器
     let host = std::env::var("HOST").unwrap_or_else(|_| "0.0.0.0".to_string());

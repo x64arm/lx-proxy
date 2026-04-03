@@ -2,9 +2,10 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use uuid::Uuid;
+use utoipa::ToSchema;
 
 /// 用户
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct User {
     pub id: Uuid,
     pub username: String,
@@ -15,15 +16,16 @@ pub struct User {
 }
 
 /// 创建用户请求
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct CreateUserRequest {
     pub username: String,
     pub password: String,
+    #[schema(example = "user")]
     pub role: Option<String>,
 }
 
 /// 登录请求
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct LoginRequest {
     pub username: String,
     pub password: String,
@@ -39,7 +41,7 @@ pub struct Claims {
 }
 
 /// 入站配置
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct InboundConfig {
     pub id: Uuid,
     pub user_id: Option<Uuid>,
@@ -59,7 +61,7 @@ pub struct InboundConfig {
 }
 
 /// 创建入站配置请求
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct CreateInboundRequest {
     pub user_id: Option<Uuid>,
     pub tag: String,
@@ -74,7 +76,7 @@ pub struct CreateInboundRequest {
 }
 
 /// 更新入站配置请求
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, ToSchema)]
 pub struct UpdateInboundRequest {
     pub tag: Option<String>,
     pub port: Option<i32>,
@@ -107,7 +109,7 @@ pub struct SystemConfig {
 }
 
 /// 系统状态
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct SystemStatus {
     pub cpu_usage: f32,
     pub memory_total: u64,
@@ -119,7 +121,7 @@ pub struct SystemStatus {
 }
 
 /// 统计数据
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct Stats {
     pub total_users: i64,
     pub total_inbounds: i64,

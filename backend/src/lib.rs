@@ -27,6 +27,8 @@ pub mod node;
 pub mod middleware;
 pub mod audit;
 pub mod crypto;
+pub mod cluster;
+pub mod openapi;
 
 /// 应用状态
 #[derive(Clone)]
@@ -173,6 +175,8 @@ pub fn create_app(state: AppState) -> Router {
         ))
         .layer(axum::middleware::from_fn_with_state(state.clone(), auth::auth_middleware))
         .layer(cors)
+        // P18 安全加固 - 安全响应头（最外层，确保所有响应都包含）
+        .layer(axum::middleware::from_fn(middleware::security_headers_middleware))
         .layer(CompressionLayer::new())
         .layer(TraceLayer::new_for_http())
         .with_state(state)

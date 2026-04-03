@@ -80,6 +80,16 @@ hex = "0.4"
 criterion = { version = "0.5", features = ["html_reports"] }
 futures = "0.3"
 
+# P19 高可用集群
+etcd-client = "0.14"
+sha2 = "0.10"
+strum = { version = "0.26", features = ["derive"] }
+strum_macros = "0.26"
+
+# P20 API 文档（OpenAPI/Swagger）
+utoipa = { version = "5", features = ["axum_extras", "chrono", "uuid"] }
+utoipa-swagger-ui = { version = "9", features = ["axum"] }
+
 [[bench]]
 name = "api_benchmark"
 harness = false

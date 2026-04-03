@@ -281,3 +281,27 @@ impl AuditService {
         Ok(result.rows_affected())
     }
 }
+
+/// 记录安全事件（P18 安全加固）
+pub async fn log_security_event(
+    pool: &PgPool,
+    user_id: &Uuid,
+    event_type: &str,
+    description: Option<&str>,
+    ip_address: Option<&str>,
+) -> Result<(), String> {
+    sqlx::query(
+        r#"INSERT INTO audit_logs 
+           (user_id, action, resource_type, description, ip_address, status, created_at)
+           VALUES ($1, $2, 'security', $3, $4, 'info', NOW())"#
+    )
+    .bind(user_id)
+    .bind(event_type)
+    .bind(description)
+    .bind(ip_address)
+    .execute(pool)
+    .await
+    .map_err(|e| format!("Failed to log security event: {}", e))?;
+
+    Ok(())
+}
